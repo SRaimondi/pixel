@@ -33,13 +33,13 @@ namespace pixel {
     SurfaceInteraction::SurfaceInteraction() {
     }
 
-    SurfaceInteraction::SurfaceInteraction(/*const float t_p,*/ const SSEVector &hit, const SSEVector &n,
-                                                                const SSEVector &s, const SSEVector &t, float u,
-                                                                float v,
-            /*const SSEVector & wo,*/ const PrimitiveInterface *prim_ptr,
-                                                                const MaterialInterface *const mat_ptr)
-            : /*t_param(t_p),*/ hit_point(hit), normal(n), s(s), t(t), u(u), v(v), /*wo(wo),*/
-                                prim_ptr(prim_ptr), mat_ptr(mat_ptr) {
+    SurfaceInteraction::SurfaceInteraction(const SSEVector &hit, const SSEVector &n,
+                                           const SSEVector &s, const SSEVector &t, float u,
+                                           float v,
+                                           const PrimitiveInterface *prim_ptr,
+                                           const MaterialInterface *const mat_ptr)
+            : hit_point(hit), normal(n), s(s), t(t), u(u), v(v),
+              prim_ptr(prim_ptr), mat_ptr(mat_ptr) {
     }
 
     SSESpectrum SurfaceInteraction::EmittedRadiance(const SSEVector &w) const {
@@ -63,8 +63,6 @@ namespace pixel {
         // Transform tangent space
         interaction->s = Normalize(mat * interaction->s);
         interaction->t = Normalize(mat * interaction->t);
-        // Transform outgoing direction
-        /* interaction->wo = Normalize(mat * interaction->wo); */
     }
 
 }

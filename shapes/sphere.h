@@ -56,7 +56,7 @@ namespace pixel {
 
         float Pdf(const SurfaceInteraction &from, const SSEVector &wi) const override;
 
-        BBox ShapeBoundig() const override;
+        BBox ShapeBounding() const override;
 
     private:
         // Sphere center

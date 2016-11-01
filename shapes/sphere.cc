@@ -64,7 +64,6 @@ namespace pixel {
             }
         }
         // Fill interaction data
-        /* interaction->t_param = nearest_t; */
         *t_hit = nearest_t;
         interaction->hit_point = ray(nearest_t);
         interaction->normal = Normalize(interaction->hit_point - center);
@@ -78,7 +77,6 @@ namespace pixel {
                                    0.f);
         interaction->u = phi / TWO_PI;
         interaction->v = theta / PI;
-        /* interaction->wo = -Normalize(ray.Direction()); */
 
         return true;
     }
@@ -133,7 +131,7 @@ namespace pixel {
 
     }
 
-    BBox Sphere::ShapeBoundig() const {
+    BBox Sphere::ShapeBounding() const {
         SSEVector radius_vector = SSEVector(radius, radius, radius, 0.f);
 
         return BBox(center - radius_vector, center + radius_vector);

@@ -64,7 +64,7 @@ namespace pixel {
         return false;
     }
 
-    BBox ShapeList::ShapeBoundig() const {
+    BBox ShapeList::ShapeBounding() const {
         BBox boundig;
         for (auto s : shapes) {
             boundig = BBoxUnion(boundig, s->ShapeBoundig());

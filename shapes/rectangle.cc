@@ -45,7 +45,6 @@ namespace pixel {
                 if (hit_p.x >= -half_x_width && hit_p.x <= half_x_width &&
                     hit_p.z >= -half_z_width && hit_p.z <= half_z_width) {
                     // Fill interaction data
-                    /* interaction->t_param = t; */
                     *t_hit = t;
                     interaction->hit_point = hit_p;
                     interaction->normal = SSEVector(0.f, 1.f, 0.f, 0.f);
@@ -53,7 +52,6 @@ namespace pixel {
                     interaction->t = SSEVector(0.f, 0.f, 1.f, 0.f);
                     interaction->u = (hit_p.x + half_x_width) / (2.f * half_x_width);
                     interaction->v = (hit_p.z + half_z_width) / (2.f * half_z_width);
-                    /* interaction->wo = -Normalize(ray.Direction()); */
 
                     return true;
                 }
@@ -90,7 +88,7 @@ namespace pixel {
     }
 
 
-    BBox Rectangle::ShapeBoundig() const {
+    BBox Rectangle::ShapeBounding() const {
         return BBox(
                 SSEVector(-half_x_width, -EPS, -half_z_width, 1.f),
                 SSEVector(half_x_width, EPS, half_z_width, 1.f));

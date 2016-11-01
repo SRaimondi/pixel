@@ -105,10 +105,10 @@ namespace pixel {
     // Define different type of BRDF
     enum BRDF_TYPE {
         // One of these two
-                BRDF_REFLECTION = 1 << 0,
+        BRDF_REFLECTION = 1 << 0,
         BRDF_TRANSMISSION = 1 << 1,
         // Plus one of this
-                BRDF_DIFFUSE = 1 << 2,
+        BRDF_DIFFUSE = 1 << 2,
         BRDF_GLOSSY = 1 << 3,
         BRDF_SPECULAR = 1 << 4,
         ALL_BRDF = BRDF_REFLECTION | BRDF_TRANSMISSION | BRDF_DIFFUSE | BRDF_GLOSSY | BRDF_SPECULAR

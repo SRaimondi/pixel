@@ -53,7 +53,7 @@ namespace pixel {
 
         bool IntersectP(const Ray &ray) const override;
 
-        BBox ShapeBoundig() const override;
+        BBox ShapeBounding() const override;
 
     private:
         // List of shapes

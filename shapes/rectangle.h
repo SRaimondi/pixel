@@ -51,7 +51,7 @@ namespace pixel {
 
         SurfaceInteraction Sample(float u1, float u2) const override;
 
-        BBox ShapeBoundig() const override;
+        BBox ShapeBounding() const override;
 
     private:
         // Rectangle size

@@ -48,6 +48,7 @@ namespace pixel {
         if (shape->Intersect(local_ray, &t_hit, interaction)) {
             // Transform back SurfaceInteraction
             TransformSurfaceInteraction(interaction, local_to_world);
+            // Update ray maximum value
             ray.SetNewMaximum(t_hit);
             interaction->prim_ptr = this;
             interaction->mat_ptr = material;

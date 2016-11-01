@@ -45,10 +45,10 @@ namespace pixel {
         // Constructor
         SurfaceInteraction();
 
-        SurfaceInteraction(/*const float t_p,*/ const SSEVector &hit, const SSEVector &n,
-                                                const SSEVector &s, const SSEVector &t, float u, float v,
-                /*const SSEVector & wo,*/ const PrimitiveInterface *const prim_ptr,
-                                                const MaterialInterface *const mat_ptr);
+        SurfaceInteraction(const SSEVector &hit, const SSEVector &n,
+                           const SSEVector &s, const SSEVector &t, float u, float v,
+                           const PrimitiveInterface *const prim_ptr,
+                           const MaterialInterface *const mat_ptr);
 
         // Compute emission at interaction in given direction
         SSESpectrum EmittedRadiance(const SSEVector &w) const;
@@ -59,8 +59,6 @@ namespace pixel {
         // Get BSDF
         BSDF *GetBSDF() const;
 
-        // Interaction parameter
-        //float t_param;
         // Hit point
         SSEVector hit_point;
         // Geometric normal at hit point
@@ -69,8 +67,6 @@ namespace pixel {
         SSEVector s, t;
         // UV coordinates
         float u, v;
-        // Outgoing direction at intersection
-        //SSEVector wo;
         // Primitive hit
         const PrimitiveInterface *prim_ptr;
         // Primitive material

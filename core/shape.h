@@ -64,7 +64,7 @@ namespace pixel {
         virtual float Pdf(const SurfaceInteraction &from, const SSEVector &wi) const;
 
         // Returns the Shape BBOX
-        virtual BBox ShapeBoundig() const = 0;
+        virtual BBox ShapeBounding() const = 0;
     };
 }
 
