@@ -81,6 +81,8 @@ namespace pixel {
 
     class DebugIntegrator;
 
+    class DirectIntegrator;
+
     class SurfaceIntegratorInterface;
 
     class Scene;
@@ -104,6 +106,8 @@ namespace pixel {
     class LightInterface;
 
     class OcclusionTester;
+
+    class PointLight;
 
     // Declare constant values
     static float EPS = 10e-5f;

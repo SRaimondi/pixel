@@ -53,7 +53,6 @@ namespace pixel {
 
         // Compute directional PDF to sample the given light direction from a given SurfaceInteraction
         virtual float Pdf_Li(const SurfaceInteraction &from, const SSEVector &wi) const = 0;
-
     };
 
     // Define occlusion tester class
@@ -62,13 +61,14 @@ namespace pixel {
         // Constructor
         OcclusionTester();
 
-        OcclusionTester(const SurfaceInteraction &si1, const SurfaceInteraction &si2);
+        OcclusionTester(const SurfaceInteraction &si, const SSEVector &p);
 
         // Check if the ray between the two interaction is occluded or not
         bool Unoccluded(const Scene &scene) const;
 
     private:
-        SurfaceInteraction si1, si2;
+        SurfaceInteraction si;
+        SSEVector p;
     };
 
 }

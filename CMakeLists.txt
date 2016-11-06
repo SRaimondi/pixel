@@ -22,7 +22,8 @@ include_directories(camera
         primitives
         renderer
         shapes
-        tonemapper)
+        tonemapper
+        lights)
 
 set(SOURCE_FILES
         camera/pinhole_camera.cc
@@ -79,6 +80,12 @@ set(SOURCE_FILES
         shapes/sphere.h
         tonemapper/clamp_tonemapper.cc
         tonemapper/clamp_tonemapper.h
-        main.cc core/light.h core/light.cpp)
+        main.cc
+        core/light.h
+        core/light.cpp
+        lights/point_light.h
+        lights/point_light.cpp
+        integrator/direct_integrator.h
+        integrator/direct_integrator.cpp)
 
 add_executable(pixel ${SOURCE_FILES})

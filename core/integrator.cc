@@ -26,11 +26,46 @@
 #include "sse_spectrum.h"
 #include "interaction.h"
 #include "scene.h"
+#include "light.h"
+#include "scattering.h"
+
+// DEBUG
+#include <random>
 
 namespace pixel {
 
-    SSESpectrum DirectIllumination(const SurfaceInteraction &interaction, const Scene &scene) {
+    SSESpectrum DirectIllumination(const SurfaceInteraction &interaction, const SSEVector &wo_world, const Scene &scene) {
+        SSESpectrum Ld(0.f);
 
+        // TODO: FIX ME
+        std::default_random_engine generator;
+        std::uniform_real_distribution<float> distribution(0.f, 1.f);
+
+        // Get BSDF
+        BSDF *bsdf = interaction.GetBSDF();
+        // Type of BRDF to check for direct illumination
+        BRDF_TYPE brdf_types = BRDF_TYPE(ALL_BRDF & ~BRDF_SPECULAR);
+        // Sample lights
+        SSEVector wi;
+        float pdf_Li;
+        OcclusionTester occ_tester;
+        for (auto light : scene.GetLights()) {
+            // Sample incoming radiance
+            SSESpectrum Li = light->Sample_Li(interaction, distribution(generator), distribution(generator), &wi, &pdf_Li, &occ_tester);
+            if (!IsBlack(Li) && pdf_Li != 0.f) {
+                if (occ_tester.Unoccluded(scene)) {
+                    // Evaluate BRDF
+                    SSESpectrum f = bsdf->f(wo_world, wi, brdf_types);
+                    if (!IsBlack(f)) {
+                        Ld += f * Li * AbsDotProductSSE(wi, interaction.normal) / pdf_Li;
+                    }
+                }
+            }
+        }
+
+        delete bsdf;
+
+        return Ld;
     }
 
 }

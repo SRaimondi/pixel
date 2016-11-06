@@ -36,13 +36,13 @@ namespace pixel {
 
     OcclusionTester::OcclusionTester() {}
 
-    OcclusionTester::OcclusionTester(const SurfaceInteraction &si1, const SurfaceInteraction &si2)
-    : si1(si1), si2(si2) {
+    OcclusionTester::OcclusionTester(const SurfaceInteraction &si, const SSEVector &p)
+    : si(si), p(p) {
     }
 
     bool OcclusionTester::Unoccluded(const Scene &scene) const {
         // Create test ray
-        Ray occ_ray = Ray(si1.hit_point, si2.hit_point - si1.hit_point, EPS, 1.f - EPS);
+        Ray occ_ray = Ray(si.hit_point, p - si.hit_point, EPS, 1.f - EPS);
 
         return !scene.IntersectP(occ_ray);
     }

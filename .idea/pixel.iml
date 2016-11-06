@@ -8,6 +8,8 @@
       <sourceFolder url="file://$MODULE_DIR$/primitives/instance.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/primitives/instance.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/primitives/prim_list.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/lights/point_light.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/lights/point_light.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/tonemapper/clamp_tonemapper.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/tonemapper/clamp_tonemapper.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/main.cc" isTestSource="false" />
@@ -58,7 +60,9 @@
       <sourceFolder url="file://$MODULE_DIR$/material/matte_material.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/material/matte_material.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/material/emitting_material.cc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/integrator/direct_integrator.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/integrator/debug_integrator.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/integrator/direct_integrator.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/integrator/debug_integrator.cc" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />

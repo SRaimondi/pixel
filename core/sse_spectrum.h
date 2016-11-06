@@ -146,6 +146,15 @@ namespace pixel {
         return _mm_mul_ps(xmm, s.xmm);
     }
 
+    // Division
+    inline __m128 operator/(const SSESpectrum &s1, const SSESpectrum &s2) {
+        return _mm_div_ps(s1.xmm, s2.xmm);
+    }
+
+    inline __m128 operator/(const __m128 &xmm, const SSESpectrum &s) {
+        return _mm_div_ps(xmm, s.xmm);
+    }
+
     // Spectrum scaling
     inline __m128 operator*(float t, const SSESpectrum &s) {
         return _mm_mul_ps(_mm_set1_ps(t), s.xmm);

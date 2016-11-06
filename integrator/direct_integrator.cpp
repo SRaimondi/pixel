@@ -22,38 +22,36 @@
  * THE SOFTWARE.
  */
 
-/* 
- * File:   integrator.h
- * Author: simon
- *
- * Created on October 27, 2016, 12:47 AM
- */
-
-#ifndef INTEGRATOR_H
-#define INTEGRATOR_H
-
-#include "pixel.h"
+#include <interaction.h>
+#include "direct_integrator.h"
+#include "sse_spectrum.h"
+#include "scene.h"
+#include "ray.h"
 
 namespace pixel {
 
-    // Define base integrator class
-    class IntegratorInterface {
-    public:
-        // Preprocess
-        virtual void Preprocess() const = 0;
-    };
+    DirectIntegrator::DirectIntegrator() {
+    }
 
-    // Define surface integrator base class
-    class SurfaceIntegratorInterface : public IntegratorInterface {
-    public:
-        // Compute incoming radiance from a given ray
-        virtual SSESpectrum IncomingRadiance(const Ray &ray, const Scene &scene) const = 0;
-    };
+    void DirectIntegrator::Preprocess() const {
 
-    // Estimate direct illumination at given SurfaceInteraction
-    SSESpectrum DirectIllumination(const SurfaceInteraction &interaction, const SSEVector &wo_world, const Scene &scene);
+    }
+
+    SSESpectrum DirectIntegrator::IncomingRadiance(const Ray &ray, const Scene &scene) const {
+        SSESpectrum L(0.f);
+        // Find nearest intersection
+        SurfaceInteraction interaction;
+        if (!scene.Intersect(ray, &interaction)) {
+            return L;
+        }
+        // Compute wo
+        SSEVector wo_world = Normalize(-ray.Direction());
+        // Add emission
+        L += interaction.EmittedRadiance(wo_world);
+        // Compute direct illumination at found interaction
+        L += DirectIllumination(interaction, wo_world, scene);
+
+        return L;
+    }
 
 }
-
-#endif /* INTEGRATOR_H */
-

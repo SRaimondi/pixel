@@ -56,6 +56,9 @@ namespace pixel {
         if (t0 > t1) {
             std::swap(t0, t1);
         }
+        if (t0 > ray.RayMaximum() || t1 < ray.RayMinimum()) {
+            return false;
+        }
         float nearest_t = t0;
         if (t0 < ray.RayMinimum()) {
             nearest_t = t1;
@@ -104,10 +107,11 @@ namespace pixel {
         if (t0 > t1) {
             std::swap(t0, t1);
         }
-        float nearest_t = t0;
+        if (t0 > ray.RayMaximum() || t1 < ray.RayMinimum()) {
+            return false;
+        }
         if (t0 < ray.RayMinimum()) {
-            nearest_t = t1;
-            if (nearest_t > ray.RayMaximum()) {
+            if (t1 > ray.RayMaximum()) {
                 return false;
             }
         }

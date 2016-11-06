@@ -22,38 +22,41 @@
  * THE SOFTWARE.
  */
 
-/* 
- * File:   integrator.h
+/*
+ * File:   point_light.h
  * Author: simon
  *
- * Created on October 27, 2016, 12:47 AM
+ * Created on November 6, 2016, 10:26 PM
  */
 
-#ifndef INTEGRATOR_H
-#define INTEGRATOR_H
+#ifndef PIXEL_POINT_LIGHT_H
+#define PIXEL_POINT_LIGHT_H
 
 #include "pixel.h"
+#include "light.h"
+#include "sse_spectrum.h"
 
 namespace pixel {
 
-    // Define base integrator class
-    class IntegratorInterface {
+    class PointLight : public LightInterface {
     public:
-        // Preprocess
-        virtual void Preprocess() const = 0;
-    };
+        // Constructor
+        PointLight(const SSEVector &p, const SSESpectrum &i);
 
-    // Define surface integrator base class
-    class SurfaceIntegratorInterface : public IntegratorInterface {
-    public:
-        // Compute incoming radiance from a given ray
-        virtual SSESpectrum IncomingRadiance(const Ray &ray, const Scene &scene) const = 0;
-    };
+        bool IsDeltaLight() const override;
 
-    // Estimate direct illumination at given SurfaceInteraction
-    SSESpectrum DirectIllumination(const SurfaceInteraction &interaction, const SSEVector &wo_world, const Scene &scene);
+        SSESpectrum Sample_Li(const SurfaceInteraction &from, float u1, float u2,
+                  SSEVector *const wi, float *const pdf, OcclusionTester *const occ) const override;
+
+        float Pdf_Li(const SurfaceInteraction &from, const SSEVector &wi) const override;
+
+    private:
+        // Light position
+        const SSEVector position;
+        // Point light intensity
+        const SSESpectrum intensity;
+    };
 
 }
 
-#endif /* INTEGRATOR_H */
-
+#endif //PIXEL_POINT_LIGHT_H
