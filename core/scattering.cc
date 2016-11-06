@@ -30,8 +30,7 @@
 namespace pixel {
 
     BSDF::BSDF(const SurfaceInteraction &interaction)
-            : geometric_normal(interaction.normal), s(interaction.s), t(interaction.t),
-            /* wo_local(WorldToLocal(interaction.wo)),*/ brdfs() {
+            : geometric_normal(interaction.normal), s(interaction.s), t(interaction.t), brdfs() {
     }
 
     BSDF::~BSDF() {
@@ -180,7 +179,7 @@ namespace pixel {
     }
 
     SSESpectrum BRDF::Sample_f(const SSEVector &wo, SSEVector *const wi, float *const pdf,
-                               float u1, float u2, BRDF_TYPE *const sampled_type) const {
+                               float u1, float u2, BRDF_TYPE *const) const {
         // Cosine sample the hemisphere
         *wi = CosineSampleHemisphere(u1, u2);
         if (wo.y < 0.f) {
@@ -202,6 +201,5 @@ namespace pixel {
     SSESpectrum LambertianReflectionBRDF::f(const SSEVector &wo, const SSEVector &wi) const {
         return (rho * ONE_OVER_PI);
     }
-
 
 }

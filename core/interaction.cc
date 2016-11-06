@@ -30,8 +30,7 @@
 
 namespace pixel {
 
-    SurfaceInteraction::SurfaceInteraction() {
-    }
+    SurfaceInteraction::SurfaceInteraction() {}
 
     SurfaceInteraction::SurfaceInteraction(const SSEVector &hit, const SSEVector &n,
                                            const SSEVector &s, const SSEVector &t, float u,

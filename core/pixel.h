@@ -75,7 +75,7 @@ namespace pixel {
 
     class PrimitiveList;
 
-    class ShapeList;
+    // class ShapeList;
 
     class IntegratorInterface;
 
@@ -100,6 +100,10 @@ namespace pixel {
     class MatteMaterial;
 
     class EmittingMaterial;
+
+    class LightInterface;
+
+    class OcclusionTester;
 
     // Declare constant values
     static float EPS = 10e-5f;

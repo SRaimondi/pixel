@@ -32,6 +32,14 @@ namespace pixel {
             : root(root) {
     }
 
+    void Scene::AddLight(const LightInterface *const l) {
+        lights.push_back(l);
+    }
+
+    std::vector<const LightInterface *> const &Scene::GetLights() const {
+        return lights;
+    }
+
     bool Scene::Intersect(const Ray &r, SurfaceInteraction *const interaction) const {
         return root->Intersect(r, interaction);
     }

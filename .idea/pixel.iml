@@ -18,8 +18,10 @@
       <sourceFolder url="file://$MODULE_DIR$/camera/pinhole_camera.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/camera/pinhole_camera.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/ray.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/light.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/montecarlo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/tonemapper.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/bbox.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/material.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/film.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/tonemapper.cc" isTestSource="false" />
@@ -31,10 +33,10 @@
       <sourceFolder url="file://$MODULE_DIR$/core/bbox.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/scattering.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/scattering.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/core/sse_matrix.cc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/scene.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/sse_vector.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/integrator.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/core/scene.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/light.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/shape.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/primitive.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/renderer.cc" isTestSource="false" />
@@ -45,7 +47,7 @@
       <sourceFolder url="file://$MODULE_DIR$/core/ray.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/renderer.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/pixel.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/core/bbox.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/sse_matrix.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/interaction.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/scene.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/interaction.h" isTestSource="false" />

@@ -23,6 +23,7 @@
  */
 
 #include "prim_list.h"
+#include "bbox.h"
 
 namespace pixel {
 
@@ -51,6 +52,15 @@ namespace pixel {
         }
 
         return false;
+    }
+
+    BBox PrimitiveList::PrimitiveBounding() const {
+        BBox bbox;
+        for (auto prim : primitives) {
+            bbox = BBoxUnion(bbox, prim->PrimitiveBounding());
+        }
+
+        return bbox;
     }
 
 }

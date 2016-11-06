@@ -79,6 +79,6 @@ set(SOURCE_FILES
         shapes/sphere.h
         tonemapper/clamp_tonemapper.cc
         tonemapper/clamp_tonemapper.h
-        main.cc)
+        main.cc core/light.h core/light.cpp)
 
 add_executable(pixel ${SOURCE_FILES})

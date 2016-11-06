@@ -50,6 +50,8 @@ namespace pixel {
 
         bool IntersectP(const Ray &ray) const override;
 
+        BBox PrimitiveBounding() const override;
+
     private:
         // List of primitive
         std::vector<const PrimitiveInterface *> primitives;

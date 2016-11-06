@@ -22,48 +22,29 @@
  * THE SOFTWARE.
  */
 
-/* 
- * File:   scene.h
- * Author: simon
- *
- * Created on October 27, 2016, 12:51 AM
- */
-
-#ifndef SCENE_H
-#define SCENE_H
-
-#include "pixel.h"
-#include "shape.h"
+#include "light.h"
+#include "ray.h"
+#include "scene.h"
 
 namespace pixel {
 
-    // Define scene class
-    class Scene {
-    public:
-        // Constructor
-        Scene(const PrimitiveInterface *const root);
+    LightInterface::~LightInterface() {}
 
-        // Add light to the scene
-        void AddLight(const LightInterface *l);
+    bool LightInterface::IsDeltaLight() const {
+        return false;
+    }
 
-        // Access the list of lights
-        std::vector<const LightInterface *> const &GetLights() const;
+    OcclusionTester::OcclusionTester() {}
 
-        // Compute intersection of a ray with scene
-        bool Intersect(const Ray &r, SurfaceInteraction *const interaction) const;
+    OcclusionTester::OcclusionTester(const SurfaceInteraction &si1, const SurfaceInteraction &si2)
+    : si1(si1), si2(si2) {
+    }
 
-        // Check for intersection with scene
-        bool IntersectP(const Ray &r) const;
+    bool OcclusionTester::Unoccluded(const Scene &scene) const {
+        // Create test ray
+        Ray occ_ray = Ray(si1.hit_point, si2.hit_point - si1.hit_point, EPS, 1.f - EPS);
 
-    private:
-        // Scene root primitive
-        const PrimitiveInterface *const root;
-        // List of lights in the scene
-        std::vector<const LightInterface *> lights;
-    };
+        return !scene.IntersectP(occ_ray);
+    }
 
 }
-
-
-#endif /* SCENE_H */
-

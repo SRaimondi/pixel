@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 
+#include <bbox.h>
 #include "instance.h"
 #include "ray.h"
 #include "shape.h"
@@ -64,6 +65,30 @@ namespace pixel {
         Ray local_ray = TransformRay(ray, world_to_local);
 
         return shape->IntersectP(local_ray);
+    }
+
+    BBox Instance::PrimitiveBounding() const {
+        // Compute transformed shape BBOX
+        BBox bbox = shape->ShapeBounding();
+        // Compute all eight BBox vertices
+        SSEVector vertices[8];
+        vertices[0] = bbox.Min();
+        vertices[1] = SSEVector(bbox.Max().x, bbox.Min().y, bbox.Min().z, 1.f);
+        vertices[2] = SSEVector(bbox.Max().x, bbox.Min().y, bbox.Max().z, 1.f);
+        vertices[3] = SSEVector(bbox.Min().x, bbox.Min().y, bbox.Max().z, 1.f);
+
+        vertices[4] = SSEVector(bbox.Min().x, bbox.Max().y, bbox.Min().z, 1.f);
+        vertices[5] = SSEVector(bbox.Max().x, bbox.Max().y, bbox.Min().z, 1.f);
+        vertices[6] = bbox.Max();
+        vertices[7] = SSEVector(bbox.Min().x, bbox.Max().y, bbox.Max().z, 1.f);
+
+        // Reset BBox and compute the primitive one
+        bbox = BBox();
+        for (uint32_t i = 0; i < 8; i++) {
+            bbox = BBoxUnion(bbox, vertices[i]);
+        }
+
+        return bbox;
     }
 
 

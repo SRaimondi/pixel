@@ -84,7 +84,18 @@ namespace pixel {
     }
 
     SurfaceInteraction Rectangle::Sample(float u1, float u2) const {
+        SurfaceInteraction interaction;
+        float x_width = 2.f * half_x_width;
+        float z_width = 2.f * half_z_width;
+        // Just set hit_point and normal
+        interaction.hit_point = SSEVector(x_width * (u1 - 0.5f), 0.f, z_width * (u2 - 0.5f), 1.f);
+        interaction.normal = SSEVector(0.f, 1.f, 0.f, 0.f);
+//        interaction.s = SSEVector(1.f, 0.f, 0.f, 0.f);
+//        interaction.t = SSEVector(0.f, 0.f, 1.f, 0.f);
+//        interaction.u = (interaction.hit_point.x + half_x_width) / (2.f * half_x_width);
+//        interaction.v = (interaction.hit_point.z + half_z_width) / (2.f * half_z_width);
 
+        return interaction;
     }
 
 

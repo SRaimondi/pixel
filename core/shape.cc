@@ -43,8 +43,9 @@ namespace pixel {
         // Create ray in given direction and test for intersection
         Ray ray = from.SpawnRay(wi);
         SurfaceInteraction interaction_light;
+        float t_hit;
         // Compute intersection
-        if (!Intersect(ray, 0, &interaction_light)) { return 0.f; }
+        if (!Intersect(ray, &t_hit, &interaction_light)) { return 0.f; }
 
         // Convert area pdf to solid angle
         float pdf = SqrdLength(interaction_light.hit_point - from.hit_point) /

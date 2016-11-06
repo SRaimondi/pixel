@@ -50,10 +50,12 @@ namespace pixel {
         // Check if a ray interacts with the primitive
         virtual bool IntersectP(const Ray &ray) const = 0;
 
+        // Create primitive BBOX
+        virtual BBox PrimitiveBounding() const = 0;
+
     };
 
 }
-
 
 #endif /* PRIMITIVE_H */
 

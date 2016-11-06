@@ -22,50 +22,55 @@
  * THE SOFTWARE.
  */
 
-/* 
- * File:   instance.h
+/*
+ * File:   light.h
  * Author: simon
  *
- * Created on October 31, 2016, 4:58 PM
+ * Created on November 06, 2016, 9:55 PM
  */
 
-#ifndef INSTANCE_H
-#define INSTANCE_H
+#ifndef PIXEL_LIGHT_H
+#define PIXEL_LIGHT_H
 
 #include "pixel.h"
-#include "primitive.h"
 #include "sse_matrix.h"
+#include "interaction.h"
 
 namespace pixel {
 
-    // Define Instance class
-    class Instance : public PrimitiveInterface {
+    // Define light interface
+    class LightInterface {
+    public:
+        // Virtual destructor
+        virtual ~LightInterface();
+
+        // Returns true if light is delta light
+        virtual bool IsDeltaLight() const;
+
+        // Sample incoming light at a given SurfaceInteraction
+        virtual SSESpectrum Sample_Li(const SurfaceInteraction &from, float u1, float u2,
+                                      SSEVector *const wi, float *const pdf, OcclusionTester *const occ) const = 0;
+
+        // Compute directional PDF to sample the given light direction from a given SurfaceInteraction
+        virtual float Pdf_Li(const SurfaceInteraction &from, const SSEVector &wi) const = 0;
+
+    };
+
+    // Define occlusion tester class
+    class OcclusionTester {
     public:
         // Constructor
-        Instance(const ShapeInterface *const s,
-                 const MaterialInterface *const m,
-                 const SSEMatrix &l2w, const SSEMatrix &w2l);
+        OcclusionTester();
 
-        Instance(const ShapeInterface *const s,
-                 const MaterialInterface *const m,
-                 const SSEMatrix &l2w);
+        OcclusionTester(const SurfaceInteraction &si1, const SurfaceInteraction &si2);
 
-        bool Intersect(const Ray &ray, SurfaceInteraction *const interaction) const override;
-
-        bool IntersectP(const Ray &ray) const override;
-
-        BBox PrimitiveBounding() const override;
+        // Check if the ray between the two interaction is occluded or not
+        bool Unoccluded(const Scene &scene) const;
 
     private:
-        // Transformed Shape
-        const ShapeInterface *shape;
-        // Material
-        const MaterialInterface *material;
-        // Transformation matrices
-        SSEMatrix local_to_world, world_to_local;
+        SurfaceInteraction si1, si2;
     };
 
 }
 
-#endif /* INSTANCE_H */
-
+#endif //PIXEL_LIGHT_H
