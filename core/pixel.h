@@ -109,6 +109,8 @@ namespace pixel {
 
     class PointLight;
 
+    class AreaLight;
+
     // Declare constant values
     static float EPS = 10e-5f;
     static float PI = 3.14159265f;

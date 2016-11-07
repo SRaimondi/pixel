@@ -34,12 +34,12 @@
 
 namespace pixel {
 
+    // TODO: FIX ME
+    std::default_random_engine generator;
+    std::uniform_real_distribution<float> distribution(0.f, 1.f);
+
     SSESpectrum DirectIllumination(const SurfaceInteraction &interaction, const SSEVector &wo_world, const Scene &scene) {
         SSESpectrum Ld(0.f);
-
-        // TODO: FIX ME
-        std::default_random_engine generator;
-        std::uniform_real_distribution<float> distribution(0.f, 1.f);
 
         // Get BSDF
         BSDF *bsdf = interaction.GetBSDF();
@@ -63,6 +63,7 @@ namespace pixel {
             }
         }
 
+        // Free BSDF space
         delete bsdf;
 
         return Ld;

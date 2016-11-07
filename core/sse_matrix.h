@@ -44,8 +44,8 @@ namespace pixel {
         // Constructor
         SSEMatrix() {
             // Set to identity
-            for (size_t i = 0; i < 4; i++) {
-                for (size_t j = 0; j < 4; j++) {
+            for (size_t j = 0; j < 4; j++) {
+                for (size_t i = 0; i < 4; i++) {
                     if (i == j) {
                         data[j][i] = 1.f;
                     } else {
@@ -56,8 +56,8 @@ namespace pixel {
         }
 
         explicit SSEMatrix(float v) {
-            for (size_t i = 0; i < 4; i++) {
-                for (size_t j = 0; j < 4; j++) {
+            for (size_t j = 0; j < 4; j++) {
+                for (size_t i = 0; i < 4; i++) {
                     data[j][i] = v;
                 }
             }
@@ -95,8 +95,8 @@ namespace pixel {
         // Assignment operator
         SSEMatrix &operator=(const SSEMatrix &other) {
             if (this != &other) {
-                for (size_t i = 0; i < 4; i++) {
-                    for (size_t j = 0; j < 4; j++) {
+                for (size_t j = 0; j < 4; j++) {
+                    for (size_t i = 0; i < 4; i++) {
                         data[j][i] = other.data[j][i];
                     }
                 }
@@ -107,8 +107,8 @@ namespace pixel {
 
         // Set matrix to zero
         void SetZero() {
-            for (size_t i = 0; i < 4; i++) {
-                for (size_t j = 0; j < 4; j++) {
+            for (size_t j = 0; j < 4; j++) {
+                for (size_t i = 0; i < 4; i++) {
                     data[j][i] = 0.f;
                 }
             }
@@ -204,15 +204,10 @@ namespace pixel {
 
     // Transpose matrix
     inline SSEMatrix Transpose(const SSEMatrix &m) {
-        SSEMatrix result;
-
-        for (size_t i = 0; i < 4; i++) {
-            for (size_t j = 0; j < 4; j++) {
-                result.data[j][i] = m.data[i][j];
-            }
-        }
-
-        return result;
+        return SSEMatrix(m.data[0][0], m.data[0][1], m.data[0][2], m.data[0][3],
+                         m.data[1][0], m.data[1][1], m.data[1][2], m.data[1][3],
+                         m.data[2][0], m.data[2][1], m.data[2][2], m.data[2][3],
+                         m.data[3][0], m.data[3][1], m.data[3][2], m.data[3][3]);
     }
 
     // Print matrix

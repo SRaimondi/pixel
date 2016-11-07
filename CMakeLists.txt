@@ -86,6 +86,6 @@ set(SOURCE_FILES
         lights/point_light.h
         lights/point_light.cpp
         integrator/direct_integrator.h
-        integrator/direct_integrator.cpp)
+        integrator/direct_integrator.cpp lights/area_light.h lights/area_light.cpp)
 
 add_executable(pixel ${SOURCE_FILES})

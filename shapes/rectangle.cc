@@ -88,7 +88,7 @@ namespace pixel {
         float x_width = 2.f * half_x_width;
         float z_width = 2.f * half_z_width;
         // Just set hit_point and normal
-        interaction.hit_point = SSEVector(x_width * (u1 - 0.5f), 0.f, z_width * (u2 - 0.5f), 1.f);
+        interaction.hit_point = SSEVector(-half_x_width + x_width * u1, 0.f, -half_z_width + z_width * u2, 1.f);
         interaction.normal = SSEVector(0.f, 1.f, 0.f, 0.f);
 //        interaction.s = SSEVector(1.f, 0.f, 0.f, 0.f);
 //        interaction.t = SSEVector(0.f, 0.f, 1.f, 0.f);

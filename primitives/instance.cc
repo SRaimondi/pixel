@@ -22,11 +22,11 @@
  * THE SOFTWARE.
  */
 
-#include <bbox.h>
 #include "instance.h"
 #include "ray.h"
 #include "shape.h"
 #include "interaction.h"
+#include "bbox.h"
 
 namespace pixel {
 
