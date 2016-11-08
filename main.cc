@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
 
     // Create camera
     pixel::CameraInterface *camera = new pixel::PinholeCamera(
-            pixel::SSEVector(0.f, 5.f, 20.f, 1.f), pixel::SSEVector(0.f, 0.f, -2.f, 1.f),
+            pixel::SSEVector(15.f, 20.f, 20.f, 1.f), pixel::SSEVector(0.f, 0.f, 0.f, 1.f),
             pixel::SSEVector(0.f, 1.f, 0.f, 0.f),
             60.f, f->GetWidth(), f->GetHeight());
 
@@ -93,10 +93,13 @@ int main(int argc, char **argv) {
     list.AddPrimitive(p);
 
 
-    s = new pixel::Rectangle(pixel::Translate(0.f, 10.f, 0.f) * pixel::RotateX(-180.f), 5.f, 5.f);
-    // s = new pixel::Sphere(pixel::Translate(0.f, 10.f, 0.f), 2.5f);
-    pixel::AreaLight *area_light = new pixel::AreaLight(s, new pixel::EmittingMaterial(pixel::SSESpectrum(100.f)));
-    list.AddPrimitive(area_light);
+    s = new pixel::Rectangle(pixel::Translate(0.f, 10.f, 0.f) * pixel::RotateX(180.f), 5.f, 5.f);
+    pixel::AreaLight *area_light_r = new pixel::AreaLight(s, new pixel::EmittingMaterial(pixel::SSESpectrum(10.f)));
+    //list.AddPrimitive(area_light_r);
+
+    s = new pixel::Sphere(pixel::Translate(0.f, 10.f, 0.f), 2.5f);
+    pixel::AreaLight *area_light_s = new pixel::AreaLight(s, new pixel::EmittingMaterial(pixel::SSESpectrum(10.f)));
+    list.AddPrimitive(area_light_s);
 
     // Create scene
     pixel::Scene scene(&list);
@@ -104,11 +107,12 @@ int main(int argc, char **argv) {
     // Add light
     //scene.AddLight(new pixel::PointLight(pixel::SSEVector(0.f, 5.f, 8.f, 1.f), pixel::SSESpectrum(100.f)));
     //scene.AddLight(new pixel::PointLight(pixel::SSEVector(0.f, 5.f, -8.f, 1.f), pixel::SSESpectrum(100.f)));
-    scene.AddLight(area_light);
+    //scene.AddLight(area_light_r);
+    scene.AddLight(area_light_s);
 
     // Create renderer
 //    pixel::RendererInterface *renderer = new pixel::SamplerRenderer(
-//            new pixel::DebugIntegrator(pixel::DebugMode::DEBUG_BSDF), 1);
+//            new pixel::DebugIntegrator(pixel::DebugMode::DEBUB_HIT), 1);
     pixel::RendererInterface *renderer = new pixel::SamplerRenderer(
             new pixel::DirectIntegrator(), 64);
 
@@ -118,7 +122,7 @@ int main(int argc, char **argv) {
     // Create tone mapper
     pixel::ToneMapperInterface *t = new pixel::ClampToneMapper(1.f);
     // Process image and create it
-    t->Process(std::string("test.ppm"), *f);
+    t->Process(std::string("test_sphere.ppm"), *f);
 
     return 0;
 }

@@ -214,6 +214,15 @@ namespace pixel {
         return std::abs(DotProduct(v1, v2));
     }
 
+    // Normal dot product only for x, y, z
+    inline float DotProduct3(const SSEVector &v1, const SSEVector &v2) {
+        return (v1.x * v2.x + v1.y * v2.y + v1.z * v2.z);
+    }
+
+    inline float AbsDotProduct3(const SSEVector &v1, const SSEVector &v2) {
+        return std::abs(DotProduct3(v1, v2));
+    }
+
     // SSE length of a vector
     inline __m128 SSELength(const SSEVector &v) {
         return _mm_sqrt_ps(DotProductSSE(v.xmm, v.xmm));
@@ -266,15 +275,19 @@ namespace pixel {
         if (std::abs(v.x) <= std::abs(v.y) && std::abs(v.x) <= std::abs(v.z)) {
             return SSEVector(0.f, -v.z, v.y, 0.f);
         } else if (std::abs(v.y) <= std::abs(v.x) && std::abs(v.y) <= std::abs(v.z)) {
-            return SSEVector(-v.z, 0, v.x, 0);
+            return SSEVector(-v.z, 0.f, v.x, 0.f);
         } else {
-            return SSEVector(-v.y, v.x, 0, 0);
+            return SSEVector(-v.y, v.x, 0.f, 0.f);
         }
     }
 
     // Create coordinate system
     inline void CoordinateSystem(const SSEVector &v, SSEVector *const u, SSEVector *const w) {
-        *u = Orthogonal(v);
+        if (std::abs(v.x) > std::abs(v.y)) {
+            *u = SSEVector(-v.z, 0.f, v.x, 0.f) / std::sqrt(v.x * v.x + v.z * v.z);
+        } else {
+            *u = SSEVector(0.f, v.z, -v.y, 0.f) / std::sqrt(v.y * v.y + v.z * v.z);
+        }
         *w = CrossProduct(*u, v);
     }
 

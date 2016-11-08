@@ -58,7 +58,7 @@ namespace pixel {
 
         // Convert area pdf to solid angle
         float pdf = SqrdLength(interaction_light.hit_point - from.hit_point) /
-                    (AbsDotProduct(interaction_light.normal, -wi) * Area());
+                    (AbsDotProduct3(interaction_light.normal, -wi) * Area());
         if (std::isinf(pdf)) { pdf = 0.f; }
 
         return pdf;

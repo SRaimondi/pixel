@@ -75,7 +75,7 @@ namespace pixel {
             float t = -local_ray.Origin().y / local_ray.Direction().y;
             if (t > local_ray.RayMinimum() && t < local_ray.RayMaximum()) {
                 // Compute hit point
-                SSEVector hit_p = ray(t);
+                SSEVector hit_p = local_ray(t);
                 if (hit_p.x >= -half_x_width && hit_p.x <= half_x_width &&
                     hit_p.z >= -half_z_width && hit_p.z <= half_z_width) {
                     return true;
@@ -95,8 +95,9 @@ namespace pixel {
         float x_width = 2.f * half_x_width;
         float z_width = 2.f * half_z_width;
         // Just set hit_point and normal
-        interaction.hit_point = local_to_world * SSEVector(-half_x_width + x_width * u1, 0.f, -half_z_width + z_width * u2, 1.f);
-        interaction.normal = Normalize(Transpose(world_to_local) * SSEVector(0.f, 1.f, 0.f, 0.f));
+        interaction.hit_point = SSEVector(-half_x_width + x_width * u1, 0.f, -half_z_width + z_width * u2, 1.f);
+        interaction.normal = SSEVector(0.f, 1.f, 0.f, 0.f);
+        TransformSurfaceInteraction(&interaction, local_to_world);
 
         return interaction;
     }

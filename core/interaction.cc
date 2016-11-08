@@ -58,7 +58,10 @@ namespace pixel {
         // Transform hit_point
         interaction->hit_point = mat * interaction->hit_point;
         // Transform normal
-        interaction->normal = Normalize(Transpose(Inverse(mat)) * interaction->normal);
+        interaction->normal = Transpose(Inverse(mat)) * interaction->normal;
+        // Small correction we need to consider or normalization will be incorrect
+        interaction->normal.w = 0.f;
+        Normalize(&(interaction->normal));
         // Transform tangent space
         interaction->s = Normalize(mat * interaction->s);
         interaction->t = Normalize(mat * interaction->t);

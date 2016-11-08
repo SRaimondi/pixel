@@ -40,7 +40,7 @@ namespace pixel {
         // Compute terms for quadratic form
         float a = DotProduct(local_ray.Direction(), local_ray.Direction());
         float b = 2.f * DotProduct(local_ray.Origin(), local_ray.Direction());
-        float c = DotProduct(local_ray.Origin(), local_ray.Origin()) - radius * radius;
+        float c = DotProduct3(local_ray.Origin(), local_ray.Origin()) - radius * radius;
         float discriminant = b * b - 4.f * a * c;
         if (discriminant < 0.f) {
             return false;
@@ -62,7 +62,7 @@ namespace pixel {
             return false;
         }
         float nearest_t = t0;
-        if (nearest_t < local_ray.RayMinimum()) {
+        if (t0 < local_ray.RayMinimum()) {
             nearest_t = t1;
             if (nearest_t > local_ray.RayMaximum()) {
                 return false;
@@ -95,7 +95,7 @@ namespace pixel {
         // Compute terms for quadratic form
         float a = DotProduct(local_ray.Direction(), local_ray.Direction());
         float b = 2.f * DotProduct(local_ray.Origin(), local_ray.Direction());
-        float c = DotProduct(local_ray.Origin(), local_ray.Origin()) - radius * radius;
+        float c = DotProduct3(local_ray.Origin(), local_ray.Origin()) - radius * radius;
         float discriminant = b * b - 4.f * a * c;
         if (discriminant < 0.f) {
             return false;
@@ -160,14 +160,11 @@ namespace pixel {
         float cos_alpha = (dc * dc + radius * radius - ds * ds) / (2.f * dc * radius);
         float sin_alpha = std::sqrt(std::max(0.f, 1.f - cos_alpha * cos_alpha));
 
-        // Compute surface normal
-        SSEVector normal_sphere = SphericalDirection(sin_alpha, cos_alpha, phi, -u_c, -v_c, -w_c);
-        SSEVector point_sphere = radius * normal_sphere;
-        point_sphere.w = 1.f;
-
         SurfaceInteraction interaction;
-        interaction.hit_point = local_to_world * point_sphere;
-        interaction.normal = Normalize(Transpose(world_to_local) * normal_sphere);
+        interaction.normal = SphericalDirection(sin_alpha, cos_alpha, phi, -u_c, -v_c, -w_c);
+        interaction.hit_point = SSEVector(0.f, 0.f, 0.f, 1.f) + radius * interaction.normal;
+
+        TransformSurfaceInteraction(&interaction, local_to_world);
 
         return interaction;
     }
