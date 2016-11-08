@@ -71,14 +71,14 @@ namespace pixel {
         // Fill interaction data
         *t_hit = nearest_t;
         interaction->hit_point = local_ray(nearest_t);
-        interaction->normal = Normalize(interaction->hit_point);
+        interaction->normal = Normalize(interaction->hit_point - SSEVector(0.f, 0.f, 0.f, 1.f));
         float phi = std::atan2(interaction->hit_point.z, interaction->hit_point.x);
         if (phi < 0.f) {
             phi += TWO_PI;
         }
         float theta = std::acos((interaction->hit_point.y) / radius);
         interaction->s = SSEVector(std::sin(phi), 0.f, -std::cos(phi), 0.f);
-        interaction->t = SSEVector(-std::cos(theta) * std::cos(phi), -std::sin(theta), std::cos(theta) * std::sin(phi),
+        interaction->t = SSEVector(std::cos(theta) * std::cos(phi), -std::sin(theta), std::cos(theta) * std::sin(phi),
                                    0.f);
         interaction->u = phi / TWO_PI;
         interaction->v = theta / PI;

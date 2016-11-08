@@ -22,35 +22,33 @@
  * THE SOFTWARE.
  */
 
-/* 
- * File:   matte_material.h
+/*
+ * File:   mirror_material.h
  * Author: simon
  *
- * Created on October 31, 2016, 10:11 PM
+ * Created on November 8, 2016, 09:44 PM
  */
 
-#ifndef MATTE_MATERIAL_H
-#define MATTE_MATERIAL_H
+
+#ifndef PIXEL_MIRROR_MATERIAL_H
+#define PIXEL_MIRROR_MATERIAL_H
 
 #include "pixel.h"
 #include "material.h"
 
 namespace pixel {
 
-    // Define Matte material class
-    class MatteMaterial : public MaterialInterface {
+    class MirrorMaterial : public MaterialInterface {
     public:
-        // Constructor
-        MatteMaterial(const SSESpectrum &rho);
+        MirrorMaterial(const SSESpectrum &R);
 
         BSDF *GetBSDF(const SurfaceInteraction &interaction) const override;
 
     private:
-        // For the moment, simple color, no texture
-        const SSESpectrum rho;
+        // Mirror reflectance
+        const SSESpectrum R;
     };
 
 }
 
-#endif /* MATTE_MATERIAL_H */
-
+#endif //PIXEL_MIRROR_MATERIAL_H

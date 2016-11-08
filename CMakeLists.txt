@@ -86,6 +86,10 @@ set(SOURCE_FILES
         lights/point_light.h
         lights/point_light.cpp
         integrator/direct_integrator.h
-        integrator/direct_integrator.cpp lights/area_light.h lights/area_light.cpp)
+        integrator/direct_integrator.cpp
+        lights/area_light.h
+        lights/area_light.cpp
+        material/mirror_material.h
+        material/mirror_material.cpp integrator/whitted_integrator.h integrator/whitted_integrator.cpp)
 
 add_executable(pixel ${SOURCE_FILES})

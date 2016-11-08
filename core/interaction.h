@@ -54,7 +54,7 @@ namespace pixel {
         SSESpectrum EmittedRadiance(const SSEVector &w) const;
 
         // Spawn ray in given direction
-        Ray SpawnRay(const SSEVector &dir) const;
+        Ray SpawnRay(const SSEVector &dir, uint32_t depth = 0) const;
 
         // Get BSDF
         BSDF *GetBSDF() const;

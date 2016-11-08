@@ -83,6 +83,8 @@ namespace pixel {
 
     class DirectIntegrator;
 
+    class WhittedIntegrator;
+
     class SurfaceIntegratorInterface;
 
     class Scene;
@@ -102,6 +104,8 @@ namespace pixel {
     class MatteMaterial;
 
     class EmittingMaterial;
+
+    class MirrorMaterial;
 
     class LightInterface;
 

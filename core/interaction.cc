@@ -45,8 +45,8 @@ namespace pixel {
         return (mat_ptr->type == MAT_EMITTING) ? mat_ptr->Emission(*this, w) : SSESpectrum(0.f);
     }
 
-    Ray SurfaceInteraction::SpawnRay(const SSEVector &dir) const {
-        return Ray(hit_point, dir);
+    Ray SurfaceInteraction::SpawnRay(const SSEVector &dir, uint32_t depth) const {
+        return Ray(hit_point, dir, EPS, INFINITY, depth);
     }
 
     BSDF *SurfaceInteraction::GetBSDF() const {

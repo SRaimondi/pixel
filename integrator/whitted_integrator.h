@@ -22,35 +22,35 @@
  * THE SOFTWARE.
  */
 
-/* 
- * File:   matte_material.h
+/*
+ * File:   whitted_integrator.h
  * Author: simon
  *
- * Created on October 31, 2016, 10:11 PM
+ * Created on November 8, 2016, 10:04 PM
  */
 
-#ifndef MATTE_MATERIAL_H
-#define MATTE_MATERIAL_H
-
 #include "pixel.h"
-#include "material.h"
+#include "integrator.h"
+
+#ifndef PIXEL_WHITTED_INTEGRATOR_H
+#define PIXEL_WHITTED_INTEGRATOR_H
 
 namespace pixel {
 
-    // Define Matte material class
-    class MatteMaterial : public MaterialInterface {
+    // Define Whitted integrator class
+    class WhittedIntegrator : public SurfaceIntegratorInterface {
     public:
-        // Constructor
-        MatteMaterial(const SSESpectrum &rho);
+        WhittedIntegrator(uint32_t max_depth = 5);
 
-        BSDF *GetBSDF(const SurfaceInteraction &interaction) const override;
+        void Preprocess() const override;
+
+        SSESpectrum IncomingRadiance(const Ray &ray, const Scene &scene) const override;
 
     private:
-        // For the moment, simple color, no texture
-        const SSESpectrum rho;
+        // Maximum tracing depth
+        const uint32_t max_depth;
     };
 
 }
 
-#endif /* MATTE_MATERIAL_H */
-
+#endif //PIXEL_WHITTED_INTEGRATOR_H

@@ -110,6 +110,7 @@ namespace pixel {
     public:
         // Destructor
         virtual ~FresnelInterface();
+
         // Evaluate Fresnel term
         virtual SSESpectrum Evaluate(float cos_theta_i) const = 0;
     };
@@ -135,10 +136,10 @@ namespace pixel {
     // Define different type of BRDF
     enum BRDF_TYPE {
         // One of these two
-        BRDF_REFLECTION = 1 << 0,
+                BRDF_REFLECTION = 1 << 0,
         BRDF_TRANSMISSION = 1 << 1,
         // Plus one of this
-        BRDF_DIFFUSE = 1 << 2,
+                BRDF_DIFFUSE = 1 << 2,
         BRDF_GLOSSY = 1 << 3,
         BRDF_SPECULAR = 1 << 4,
         ALL_BRDF = BRDF_REFLECTION | BRDF_TRANSMISSION | BRDF_DIFFUSE | BRDF_GLOSSY | BRDF_SPECULAR
@@ -230,8 +231,25 @@ namespace pixel {
         const SSESpectrum rho;
     };
 
+    // Specular reflection BRDF
 
+    class SpecularReflection : public BRDF {
+    public:
+        // Constructor
+        SpecularReflection(const SSESpectrum &R, FresnelInterface *const f);
 
+        SSESpectrum f(const SSEVector &wo, const SSEVector &wi) const override;
+
+        SSESpectrum Sample_f(const SSEVector &wo, SSEVector *const wi, float *const pdf, float u1, float u2,
+                             BRDF_TYPE *const sampled_type) const override;
+
+        float Pdf(const SSEVector &wo, const SSEVector &wi) const override;
+
+    private:
+        // Reflection
+        const SSESpectrum R;
+        const FresnelInterface *fresnel;
+    };
 
 }
 

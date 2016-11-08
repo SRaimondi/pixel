@@ -22,35 +22,42 @@
  * THE SOFTWARE.
  */
 
-/* 
- * File:   matte_material.h
- * Author: simon
- *
- * Created on October 31, 2016, 10:11 PM
- */
+#include "interaction.h"
+#include "whitted_integrator.h"
+#include "sse_spectrum.h"
+#include "scene.h"
+#include "ray.h"
 
-#ifndef MATTE_MATERIAL_H
-#define MATTE_MATERIAL_H
-
-#include "pixel.h"
-#include "material.h"
 
 namespace pixel {
 
-    // Define Matte material class
-    class MatteMaterial : public MaterialInterface {
-    public:
-        // Constructor
-        MatteMaterial(const SSESpectrum &rho);
+    WhittedIntegrator::WhittedIntegrator(uint32_t max_depth)
+    : max_depth(max_depth) {
+    }
 
-        BSDF *GetBSDF(const SurfaceInteraction &interaction) const override;
+    void WhittedIntegrator::Preprocess() const {
 
-    private:
-        // For the moment, simple color, no texture
-        const SSESpectrum rho;
-    };
+    }
+
+    SSESpectrum WhittedIntegrator::IncomingRadiance(const Ray &ray, const Scene &scene) const {
+        SSESpectrum L(0.f);
+        // Find nearest intersection
+        SurfaceInteraction interaction;
+        if (!scene.Intersect(ray, &interaction)) {
+            return L;
+        }
+        // Compute wo
+        SSEVector wo_world = Normalize(-ray.Direction());
+        // Add emission
+        L += interaction.EmittedRadiance(wo_world);
+        // Compute direct illumination at found interaction
+        L += DirectIllumination(interaction, wo_world, scene);
+
+        if (ray.RayDepth() < max_depth) {
+            L += SpecularReflection(interaction, wo_world, this, scene, ray.RayDepth() + 1);
+        }
+
+        return L;
+    }
 
 }
-
-#endif /* MATTE_MATERIAL_H */
-

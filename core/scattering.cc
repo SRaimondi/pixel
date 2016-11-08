@@ -57,14 +57,14 @@ namespace pixel {
     }
 
     FresnelDielectric::FresnelDielectric(float eta_i, float eta_t)
-    : eta_i(eta_i), eta_t(eta_t) {
+            : eta_i(eta_i), eta_t(eta_t) {
     }
 
     SSESpectrum FresnelDielectric::Evaluate(float cos_theta_i) const {
-        return FrDielectric(cos_theta_i, eta_i, eta_t);
+        return SSESpectrum(FrDielectric(cos_theta_i, eta_i, eta_t));
     }
 
-    SSESpectrum FresnelIdeal::Evaluate(float ) const {
+    SSESpectrum FresnelIdeal::Evaluate(float) const {
         return SSESpectrum(1.f);
     }
 
@@ -241,4 +241,26 @@ namespace pixel {
         return (rho * ONE_OVER_PI);
     }
 
+    SpecularReflection::SpecularReflection(const SSESpectrum &R, FresnelInterface *const f)
+            : BRDF(BRDF_TYPE(BRDF_REFLECTION | BRDF_SPECULAR)), R(R), fresnel(f) {
+    }
+
+    SSESpectrum SpecularReflection::f(const SSEVector &, const SSEVector &) const {
+        return SSESpectrum(0.f);
+    }
+
+    SSESpectrum SpecularReflection::Sample_f(const SSEVector &wo, SSEVector *const wi,
+                                             float *const pdf, float , float ,
+                                             BRDF_TYPE *const ) const {
+        // Compute perfect specular direction
+        *wi = SSEVector(-wo.x, wo.y, -wo.z, 0.f);
+        *pdf = 1.f;
+
+        // Note that there is not division by cosine term!
+        return fresnel->Evaluate(CosTheta(*wi)) * R;
+    }
+
+    float SpecularReflection::Pdf(const SSEVector &, const SSEVector &) const {
+        return 0.f;
+    }
 }

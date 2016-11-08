@@ -44,6 +44,7 @@
 #include "sampler_renderer.h"
 #include "debug_integrator.h"
 #include "direct_integrator.h"
+#include "whitted_integrator.h"
 #include "interaction.h"
 #include "shape_list.h"
 #include "instance.h"
@@ -51,6 +52,7 @@
 #include "rectangle.h"
 #include "matte_material.h"
 #include "emitting_material.h"
+#include "mirror_material.h"
 #include "prim_list.h"
 #include "point_light.h"
 #include "area_light.h"
@@ -81,8 +83,15 @@ int main(int argc, char **argv) {
     list.AddPrimitive(p);
 
     s = new pixel::Sphere(pixel::Translate(0.f, 2.f, -3.f), 2.f);
-    p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.f, 0.1f, 0.9f)));
+    //p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.f, 0.1f, 0.9f)));
+    p = new pixel::Instance(s, new pixel::MirrorMaterial(pixel::SSESpectrum(0.9f)));
     list.AddPrimitive(p);
+
+
+//    pixel::Ray r = pixel::Ray(pixel::SSEVector(0.f, 5.f, 0.f, 1.f), pixel::SSEVector(0.f, -1.f, 0.f, 0.f));
+//    pixel::SurfaceInteraction interaction;
+//    float thit;
+//    bool hit = s->Intersect(r, &thit, &interaction);
 
 //    s = new pixel::Sphere(pixel::SSEVector(0.f, 2.f, 0.f, 1.f), 2.f);
 //    p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.f, 0.9f, 0.f)), pixel::SSEMatrix());
@@ -98,6 +107,7 @@ int main(int argc, char **argv) {
 
     s = new pixel::Rectangle(pixel::SSEMatrix(), 20.f, 20.f);
     p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.f, 0.9f, 0.9f)));
+    //p = new pixel::Instance(s, new pixel::MirrorMaterial(pixel::SSESpectrum(0.9f)));
     list.AddPrimitive(p);
 
 
@@ -122,7 +132,7 @@ int main(int argc, char **argv) {
 //    pixel::RendererInterface *renderer = new pixel::SamplerRenderer(
 //            new pixel::DebugIntegrator(pixel::DebugMode::DEBUB_HIT), 1);
     pixel::RendererInterface *renderer = new pixel::SamplerRenderer(
-            new pixel::DirectIntegrator(), 64);
+            new pixel::WhittedIntegrator(), 64);
 
     // Render image
     renderer->RenderImage(f, scene, *camera);
