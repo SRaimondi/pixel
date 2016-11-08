@@ -41,7 +41,7 @@ namespace pixel {
     class Rectangle : public ShapeInterface {
     public:
         // Constructor
-        Rectangle(float x_w, float z_w);
+        Rectangle(const SSEMatrix &l2w, float x_w, float z_w);
 
         bool Intersect(const Ray &ray, float *const t_hit, SurfaceInteraction *const interaction) const override;
 

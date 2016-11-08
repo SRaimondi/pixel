@@ -33,12 +33,18 @@
 #define INTERSECTABLE_H
 
 #include "pixel.h"
+#include "sse_matrix.h"
 
 namespace pixel {
 
     // Define shape interface
     class ShapeInterface {
     public:
+        // Constructor
+        ShapeInterface(const SSEMatrix &l2w, const SSEMatrix &w2l);
+
+        ShapeInterface(const SSEMatrix &l2w);
+
         // Virtual destructor
         virtual ~ShapeInterface();
 
@@ -65,6 +71,13 @@ namespace pixel {
 
         // Returns the Shape BBOX
         virtual BBox ShapeBounding() const = 0;
+
+        // Returns the world Shape BBOX
+        virtual BBox WorldBounding() const;
+
+    protected:
+        // Transformation matrices
+        SSEMatrix local_to_world, world_to_local;
     };
 }
 

@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-#include <interaction.h>
+#include "interaction.h"
 #include "direct_integrator.h"
 #include "sse_spectrum.h"
 #include "scene.h"

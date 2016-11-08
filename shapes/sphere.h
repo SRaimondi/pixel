@@ -38,11 +38,11 @@
 
 namespace pixel {
 
-    // Define sphere class
+    // Define sphere class, cetnered at (0,0,0)
     class Sphere : public ShapeInterface {
     public:
         // Constructor
-        Sphere(const SSEVector &c, float r);
+        Sphere(const SSEMatrix &l2w, float r);
 
         bool Intersect(const Ray &ray, float *const t_hit, SurfaceInteraction *const interaction) const override;
 
@@ -59,8 +59,6 @@ namespace pixel {
         BBox ShapeBounding() const override;
 
     private:
-        // Sphere center
-        SSEVector center;
         // Sphere radius
         float radius;
     };

@@ -25,8 +25,17 @@
 #include "shape.h"
 #include "interaction.h"
 #include "ray.h"
+#include "bbox.h"
 
 namespace pixel {
+
+    ShapeInterface::ShapeInterface(const SSEMatrix &l2w, const SSEMatrix &w2l)
+    : local_to_world(l2w), world_to_local(w2l) {
+    }
+
+    ShapeInterface::ShapeInterface(const SSEMatrix &l2w)
+    : local_to_world(l2w), world_to_local(Inverse(local_to_world)) {
+    }
 
     ShapeInterface::~ShapeInterface() {
     }
@@ -53,6 +62,30 @@ namespace pixel {
         if (std::isinf(pdf)) { pdf = 0.f; }
 
         return pdf;
+    }
+
+    BBox ShapeInterface::WorldBounding() const {
+        // Compute transformed shape BBOX
+        BBox bbox = ShapeBounding();
+        // Compute all eight BBox vertices
+        SSEVector vertices[8];
+        vertices[0] = bbox.Min();
+        vertices[1] = SSEVector(bbox.Max().x, bbox.Min().y, bbox.Min().z, 1.f);
+        vertices[2] = SSEVector(bbox.Max().x, bbox.Min().y, bbox.Max().z, 1.f);
+        vertices[3] = SSEVector(bbox.Min().x, bbox.Min().y, bbox.Max().z, 1.f);
+
+        vertices[4] = SSEVector(bbox.Min().x, bbox.Max().y, bbox.Min().z, 1.f);
+        vertices[5] = SSEVector(bbox.Max().x, bbox.Max().y, bbox.Min().z, 1.f);
+        vertices[6] = bbox.Max();
+        vertices[7] = SSEVector(bbox.Min().x, bbox.Max().y, bbox.Max().z, 1.f);
+
+        // Reset BBox and compute the primitive one
+        bbox = BBox();
+        for (uint32_t i = 0; i < 8; i++) {
+            bbox = BBoxUnion(bbox, vertices[i]);
+        }
+
+        return bbox;
     }
 
 }

@@ -30,18 +30,20 @@
 
 namespace pixel {
 
-    Rectangle::Rectangle(float x_w, float z_w)
-            : half_x_width(x_w / 2.f), half_z_width(z_w / 2.f) {
+    Rectangle::Rectangle(const SSEMatrix &l2w, float x_w, float z_w)
+            : ShapeInterface(l2w), half_x_width(x_w / 2.f), half_z_width(z_w / 2.f) {
     }
 
     bool Rectangle::Intersect(const Ray &ray, float *const t_hit, SurfaceInteraction *const interaction) const {
+        // Transform ray to local space
+        Ray local_ray = TransformRay(ray, world_to_local);
         // Check if ray direction is parallel to plane
-        if (std::abs(ray.Direction().y) > EPS) {
+        if (std::abs(local_ray.Direction().y) > EPS) {
             // Compute intersection parameter
-            float t = -ray.Origin().y / ray.Direction().y;
-            if (t > ray.RayMinimum() && t < ray.RayMaximum()) {
+            float t = -local_ray.Origin().y / local_ray.Direction().y;
+            if (t > local_ray.RayMinimum() && t < local_ray.RayMaximum()) {
                 // Compute hit point
-                SSEVector hit_p = ray(t);
+                SSEVector hit_p = local_ray(t);
                 if (hit_p.x >= -half_x_width && hit_p.x <= half_x_width &&
                     hit_p.z >= -half_z_width && hit_p.z <= half_z_width) {
                     // Fill interaction data
@@ -53,6 +55,9 @@ namespace pixel {
                     interaction->u = (hit_p.x + half_x_width) / (2.f * half_x_width);
                     interaction->v = (hit_p.z + half_z_width) / (2.f * half_z_width);
 
+                    // Transform interaction back to world space
+                    TransformSurfaceInteraction(interaction, local_to_world);
+
                     return true;
                 }
             }
@@ -62,11 +67,13 @@ namespace pixel {
     }
 
     bool Rectangle::IntersectP(const Ray &ray) const {
+        // Transform ray to local space
+        Ray local_ray = TransformRay(ray, world_to_local);
         // Check if ray direction is parallel to plane
-        if (std::abs(ray.Direction().y) > EPS) {
+        if (std::abs(local_ray.Direction().y) > EPS) {
             // Compute intersection parameter
-            float t = -ray.Origin().y / ray.Direction().y;
-            if (t > ray.RayMinimum() && t < ray.RayMaximum()) {
+            float t = -local_ray.Origin().y / local_ray.Direction().y;
+            if (t > local_ray.RayMinimum() && t < local_ray.RayMaximum()) {
                 // Compute hit point
                 SSEVector hit_p = ray(t);
                 if (hit_p.x >= -half_x_width && hit_p.x <= half_x_width &&
@@ -90,10 +97,9 @@ namespace pixel {
         // Just set hit_point and normal
         interaction.hit_point = SSEVector(-half_x_width + x_width * u1, 0.f, -half_z_width + z_width * u2, 1.f);
         interaction.normal = SSEVector(0.f, 1.f, 0.f, 0.f);
-//        interaction.s = SSEVector(1.f, 0.f, 0.f, 0.f);
-//        interaction.t = SSEVector(0.f, 0.f, 1.f, 0.f);
-//        interaction.u = (interaction.hit_point.x + half_x_width) / (2.f * half_x_width);
-//        interaction.v = (interaction.hit_point.z + half_z_width) / (2.f * half_z_width);
+
+        // Transform interaction to world space
+        TransformSurfaceInteraction(&interaction, local_to_world);
 
         return interaction;
     }

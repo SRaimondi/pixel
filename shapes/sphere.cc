@@ -29,16 +29,17 @@
 
 namespace pixel {
 
-    Sphere::Sphere(const SSEVector &c, float r)
-            : center(c), radius(r) {
+    Sphere::Sphere(const SSEMatrix &l2w, float r)
+            : ShapeInterface(l2w), radius(r) {
     }
 
     bool Sphere::Intersect(const Ray &ray, float *const t_hit, SurfaceInteraction *const interaction) const {
-        SSEVector center_ray_origin = ray.Origin() - center;
+        // Transform ray to local space
+        Ray local_ray = TransformRay(ray, world_to_local);
         // Compute terms for quadratic form
-        float a = DotProduct(ray.Direction(), ray.Direction());
-        float b = 2.f * DotProduct(center_ray_origin, ray.Direction());
-        float c = DotProduct(center_ray_origin, center_ray_origin) - radius * radius;
+        float a = DotProduct(local_ray.Direction(), local_ray.Direction());
+        float b = 2.f * DotProduct(local_ray.Origin(), local_ray.Direction());
+        float c = DotProduct(local_ray.Origin(), local_ray.Origin()) - radius * radius;
         float discriminant = b * b - 4.f * a * c;
         if (discriminant < 0.f) {
             return false;
@@ -56,40 +57,44 @@ namespace pixel {
         if (t0 > t1) {
             std::swap(t0, t1);
         }
-        if (t0 > ray.RayMaximum() || t1 < ray.RayMinimum()) {
+        if (t0 > local_ray.RayMaximum() || t1 < local_ray.RayMinimum()) {
             return false;
         }
         float nearest_t = t0;
-        if (t0 < ray.RayMinimum()) {
+        if (nearest_t < local_ray.RayMinimum()) {
             nearest_t = t1;
-            if (nearest_t > ray.RayMaximum()) {
+            if (nearest_t > local_ray.RayMaximum()) {
                 return false;
             }
         }
         // Fill interaction data
         *t_hit = nearest_t;
-        interaction->hit_point = ray(nearest_t);
-        interaction->normal = Normalize(interaction->hit_point - center);
-        float phi = std::atan2(interaction->hit_point.z - center.z, interaction->hit_point.x - center.x);
+        interaction->hit_point = local_ray(nearest_t);
+        interaction->normal = Normalize(interaction->hit_point);
+        float phi = std::atan2(interaction->hit_point.z, interaction->hit_point.x);
         if (phi < 0.f) {
             phi += TWO_PI;
         }
-        float theta = std::acos((interaction->hit_point.y - center.y) / radius);
+        float theta = std::acos((interaction->hit_point.y) / radius);
         interaction->s = SSEVector(std::sin(phi), 0.f, -std::cos(phi), 0.f);
         interaction->t = SSEVector(-std::cos(theta) * std::cos(phi), -std::sin(theta), std::cos(theta) * std::sin(phi),
                                    0.f);
         interaction->u = phi / TWO_PI;
         interaction->v = theta / PI;
 
+        // Transform interaction back to world space
+        TransformSurfaceInteraction(interaction, local_to_world);
+
         return true;
     }
 
     bool Sphere::IntersectP(const Ray &ray) const {
-        SSEVector center_ray_origin = ray.Origin() - center;
+        // Transform ray to local space
+        Ray local_ray = TransformRay(ray, world_to_local);
         // Compute terms for quadratic form
-        float a = DotProduct(ray.Direction(), ray.Direction());
-        float b = 2.f * DotProduct(center_ray_origin, ray.Direction());
-        float c = DotProduct(center_ray_origin, center_ray_origin) - radius * radius;
+        float a = DotProduct(local_ray.Direction(), local_ray.Direction());
+        float b = 2.f * DotProduct(local_ray.Origin(), local_ray.Direction());
+        float c = DotProduct(local_ray.Origin(), local_ray.Origin()) - radius * radius;
         float discriminant = b * b - 4.f * a * c;
         if (discriminant < 0.f) {
             return false;
@@ -107,11 +112,11 @@ namespace pixel {
         if (t0 > t1) {
             std::swap(t0, t1);
         }
-        if (t0 > ray.RayMaximum() || t1 < ray.RayMinimum()) {
+        if (t0 > local_ray.RayMaximum() || t1 < local_ray.RayMinimum()) {
             return false;
         }
-        if (t0 < ray.RayMinimum()) {
-            if (t1 > ray.RayMaximum()) {
+        if (t0 < local_ray.RayMinimum()) {
+            if (t1 > local_ray.RayMaximum()) {
                 return false;
             }
         }
@@ -138,7 +143,7 @@ namespace pixel {
     BBox Sphere::ShapeBounding() const {
         SSEVector radius_vector = SSEVector(radius, radius, radius, 0.f);
 
-        return BBox(center - radius_vector, center + radius_vector);
+        return BBox(-radius_vector, radius_vector);
     }
 
 
