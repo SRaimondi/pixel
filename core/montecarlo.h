@@ -81,6 +81,21 @@ namespace pixel {
         return ONE_OVER_4_PI;
     }
 
+    // Uniform sample cone
+    inline SSEVector UniformSampleCone(float cos_theta_max, float u1, float u2) {
+        float cos_theta = (1.f - u1) + u1 * cos_theta_max;
+        float sin_theta = std::sqrt(1.f - cos_theta * cos_theta);
+        // Sample phi
+        float phi = u2 * TWO_PI;
+
+        return SphericalDirection(sin_theta, cos_theta, phi);
+    }
+
+    // Uniform cone pdf
+    inline float UniformPdfCone(float cos_theta_max) {
+        return (1.f / (TWO_PI * (1.f - cos_theta_max)));
+    }
+
 }
 
 #endif /* MONTECARLO_H */

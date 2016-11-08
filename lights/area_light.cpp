@@ -39,11 +39,14 @@ namespace pixel {
                                       SSEVector *const wi, float *const pdf, OcclusionTester *const occ) const {
         // Sample the shape
         SurfaceInteraction shape_sample = shape->Sample(from, u1, u2);
+        if (SqrdLength(shape_sample.hit_point - from.hit_point) == 0.f) {
+            *pdf = 0.f;
+            return SSESpectrum(0.f);
+        }
+        // Compute direction to light
         *wi = Normalize(shape_sample.hit_point - from.hit_point);
         // Compute pdf
-        *pdf = SqrdLength(shape_sample.hit_point - from.hit_point) /
-                    (AbsDotProduct(shape_sample.normal, -*wi) * shape->Area());
-        if (std::isinf(*pdf)) { *pdf = 0.f; }
+        *pdf = shape->Pdf(from, *wi);
         // Fill occlusion tester
         *occ = OcclusionTester(from, shape_sample.hit_point);
 

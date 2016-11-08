@@ -95,11 +95,8 @@ namespace pixel {
         float x_width = 2.f * half_x_width;
         float z_width = 2.f * half_z_width;
         // Just set hit_point and normal
-        interaction.hit_point = SSEVector(-half_x_width + x_width * u1, 0.f, -half_z_width + z_width * u2, 1.f);
-        interaction.normal = SSEVector(0.f, 1.f, 0.f, 0.f);
-
-        // Transform interaction to world space
-        TransformSurfaceInteraction(&interaction, local_to_world);
+        interaction.hit_point = local_to_world * SSEVector(-half_x_width + x_width * u1, 0.f, -half_z_width + z_width * u2, 1.f);
+        interaction.normal = Normalize(Transpose(world_to_local) * SSEVector(0.f, 1.f, 0.f, 0.f));
 
         return interaction;
     }

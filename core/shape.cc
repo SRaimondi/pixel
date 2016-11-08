@@ -29,9 +29,9 @@
 
 namespace pixel {
 
-    ShapeInterface::ShapeInterface(const SSEMatrix &l2w, const SSEMatrix &w2l)
-    : local_to_world(l2w), world_to_local(w2l) {
-    }
+//    ShapeInterface::ShapeInterface(const SSEMatrix &l2w, const SSEMatrix &w2l)
+//    : local_to_world(l2w), world_to_local(w2l) {
+//    }
 
     ShapeInterface::ShapeInterface(const SSEMatrix &l2w)
     : local_to_world(l2w), world_to_local(Inverse(local_to_world)) {

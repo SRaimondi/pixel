@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 
+#include <montecarlo.h>
 #include "sphere.h"
 #include "ray.h"
 #include "interaction.h"
@@ -129,15 +130,55 @@ namespace pixel {
     }
 
     SurfaceInteraction Sphere::Sample(float u1, float u2) const {
+        SurfaceInteraction interaction;
+        // Sample point on sphere
+        SSEVector p_sphere = radius * UniformSampleSphere(u1, u2);
+        interaction.hit_point = local_to_world * SSEVector(p_sphere.x, p_sphere.y, p_sphere.z, 1.f);
+        interaction.normal = Normalize(Transpose(world_to_local) * p_sphere);
 
+        return interaction;
     }
 
     SurfaceInteraction Sphere::Sample(const SurfaceInteraction &from, float u1, float u2) const {
+        // Compute center in world space
+        SSEVector sphere_center = local_to_world * SSEVector(0.f, 0.f, 0.f, 1.f);
+        // Create coordinate system for sphere sampling
+        SSEVector v_c = Normalize(sphere_center - from.hit_point);
+        SSEVector u_c, w_c;
+        CoordinateSystem(v_c, &u_c, &w_c);
 
+        // Sample sphere into visible cone
+        float sin_theta_max_2 = radius * radius / SqrdLength(from.hit_point - sphere_center);
+        float cos_theta_max = std::sqrt(std::max(0.f, 1.f - sin_theta_max_2));
+        float cos_theta = (1.f - u1) + u1 * cos_theta_max;
+        float sin_theta = std::sqrt(std::max(0.f, 1.f - cos_theta * cos_theta));
+        float phi = u2 * TWO_PI;
+
+        // Compute angle alpha between sphere center and sampled point
+        float dc = Length(from.hit_point - sphere_center);
+        float ds = dc * cos_theta - std::sqrt(std::max(0.f, radius * radius - dc * dc * sin_theta * sin_theta));
+        float cos_alpha = (dc * dc + radius * radius - ds * ds) / (2.f * dc * radius);
+        float sin_alpha = std::sqrt(std::max(0.f, 1.f - cos_alpha * cos_alpha));
+
+        // Compute surface normal
+        SSEVector normal_sphere = SphericalDirection(sin_alpha, cos_alpha, phi, -u_c, -v_c, -w_c);
+        SSEVector point_sphere = radius * normal_sphere;
+        point_sphere.w = 1.f;
+
+        SurfaceInteraction interaction;
+        interaction.hit_point = local_to_world * point_sphere;
+        interaction.normal = Normalize(Transpose(world_to_local) * normal_sphere);
+
+        return interaction;
     }
 
     float Sphere::Pdf(const SurfaceInteraction &from, const SSEVector &wi) const {
+        // Compute center in world space
+        SSEVector sphere_center = local_to_world * SSEVector(0.f, 0.f, 0.f, 1.f);
+        float sin_theta_max_2 = radius * radius / SqrdLength(from.hit_point - sphere_center);
+        float cos_theta_max = std::sqrt(std::max(0.f, 1.f - sin_theta_max_2));
 
+        return UniformPdfCone(cos_theta_max);
     }
 
     BBox Sphere::ShapeBounding() const {

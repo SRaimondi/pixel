@@ -272,6 +272,22 @@ namespace pixel {
         }
     }
 
+    // Create coordinate system
+    inline void CoordinateSystem(const SSEVector &v, SSEVector *const u, SSEVector *const w) {
+        *u = Orthogonal(v);
+        *w = CrossProduct(*u, v);
+    }
+
+    // Compute spherical direction
+    inline SSEVector SphericalDirection(float sin_theta, float cos_theta, float phi) {
+        return SSEVector(std::cos(phi) * sin_theta, cos_theta, std::sin(phi) * sin_theta, 0.f);
+    }
+
+    inline SSEVector SphericalDirection(float sin_theta, float cos_theta, float phi,
+                                        const SSEVector &u, const SSEVector &v, const SSEVector &w) {
+        return (std::cos(phi) * sin_theta * u + cos_theta * v + std::sin(phi) * sin_theta * w);
+    }
+
     // Print vector
     inline void print_sse_vector(const SSEVector &v) {
         std::cout << "[" << v.x << ", " << v.y << ", " << v.z << ", " << v.w << "]" << std::endl;

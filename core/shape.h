@@ -41,7 +41,7 @@ namespace pixel {
     class ShapeInterface {
     public:
         // Constructor
-        ShapeInterface(const SSEMatrix &l2w, const SSEMatrix &w2l);
+        // ShapeInterface(const SSEMatrix &l2w, const SSEMatrix &w2l);
 
         ShapeInterface(const SSEMatrix &l2w);
 
