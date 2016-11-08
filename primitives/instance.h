@@ -43,12 +43,7 @@ namespace pixel {
     public:
         // Constructor
         Instance(const ShapeInterface *const s,
-                 const MaterialInterface *const m,
-                 const SSEMatrix &l2w, const SSEMatrix &w2l);
-
-        Instance(const ShapeInterface *const s,
-                 const MaterialInterface *const m,
-                 const SSEMatrix &l2w);
+                 const MaterialInterface *const m);
 
         bool Intersect(const Ray &ray, SurfaceInteraction *const interaction) const override;
 
@@ -61,8 +56,6 @@ namespace pixel {
         const ShapeInterface *shape;
         // Material
         const MaterialInterface *material;
-        // Transformation matrices
-        SSEMatrix local_to_world, world_to_local;
     };
 
 }

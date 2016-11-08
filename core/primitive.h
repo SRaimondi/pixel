@@ -40,8 +40,7 @@ namespace pixel {
     class PrimitiveInterface {
     public:
         // Destructor
-        virtual ~PrimitiveInterface() {
-        }
+        virtual ~PrimitiveInterface() {}
 
         // Check if a ray interacts with the primitive and possibly fill a
         // surface_interaction class

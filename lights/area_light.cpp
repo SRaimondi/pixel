@@ -31,22 +31,14 @@
 namespace pixel {
 
     AreaLight::AreaLight(const ShapeInterface *const s,
-                         const MaterialInterface *const m,
-                         const SSEMatrix &l2w,
-                         const SSEMatrix &w2l)
-            : shape(s), material(m), local_to_world(l2w), world_to_local(w2l) {
-    }
-
-    AreaLight::AreaLight(const ShapeInterface *const s, const MaterialInterface *const m, const SSEMatrix &l2w)
-            : shape(s), material(m), local_to_world(l2w), world_to_local(Inverse(local_to_world)) {
+                         const MaterialInterface *const m)
+            : shape(s), material(m) {
     }
 
     SSESpectrum AreaLight::Sample_Li(const SurfaceInteraction &from, float u1, float u2,
                                       SSEVector *const wi, float *const pdf, OcclusionTester *const occ) const {
         // Sample the shape
         SurfaceInteraction shape_sample = shape->Sample(from, u1, u2);
-        // Transform sample to world space
-        TransformSurfaceInteraction(&shape_sample, local_to_world);
         *wi = Normalize(shape_sample.hit_point - from.hit_point);
         // Compute pdf
         *pdf = SqrdLength(shape_sample.hit_point - from.hit_point) /
@@ -63,12 +55,8 @@ namespace pixel {
     }
 
     bool AreaLight::Intersect(const Ray &ray, SurfaceInteraction *const interaction) const {
-        // Transform ray to local space
-        Ray local_ray = TransformRay(ray, world_to_local);
         float t_hit;
-        if (shape->Intersect(local_ray, &t_hit, interaction)) {
-            // Transform back SurfaceInteraction
-            TransformSurfaceInteraction(interaction, local_to_world);
+        if (shape->Intersect(ray, &t_hit, interaction)) {
             // Update ray maximum value
             ray.SetNewMaximum(t_hit);
             interaction->prim_ptr = this;
@@ -81,34 +69,11 @@ namespace pixel {
     }
 
     bool AreaLight::IntersectP(const Ray &ray) const {
-        // Transform ray to local space
-        Ray local_ray = TransformRay(ray, world_to_local);
-
-        return shape->IntersectP(local_ray);
+        return shape->IntersectP(ray);
     }
 
     BBox AreaLight::PrimitiveBounding() const {
-        // Compute transformed shape BBOX
-        BBox bbox = shape->ShapeBounding();
-        // Compute all eight BBox vertices
-        SSEVector vertices[8];
-        vertices[0] = bbox.Min();
-        vertices[1] = SSEVector(bbox.Max().x, bbox.Min().y, bbox.Min().z, 1.f);
-        vertices[2] = SSEVector(bbox.Max().x, bbox.Min().y, bbox.Max().z, 1.f);
-        vertices[3] = SSEVector(bbox.Min().x, bbox.Min().y, bbox.Max().z, 1.f);
-
-        vertices[4] = SSEVector(bbox.Min().x, bbox.Max().y, bbox.Min().z, 1.f);
-        vertices[5] = SSEVector(bbox.Max().x, bbox.Max().y, bbox.Min().z, 1.f);
-        vertices[6] = bbox.Max();
-        vertices[7] = SSEVector(bbox.Min().x, bbox.Max().y, bbox.Max().z, 1.f);
-
-        // Reset BBox and compute the primitive one
-        bbox = BBox();
-        for (uint32_t i = 0; i < 8; i++) {
-            bbox = BBoxUnion(bbox, vertices[i]);
-        }
-
-        return bbox;
+        return shape->WorldBounding();
     }
 
 }

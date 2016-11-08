@@ -45,12 +45,7 @@ namespace pixel {
     public:
         // Constructor
         AreaLight(const ShapeInterface *const s,
-                 const MaterialInterface *const m,
-                 const SSEMatrix &l2w, const SSEMatrix &w2l);
-
-        AreaLight(const ShapeInterface *const s,
-                 const MaterialInterface *const m,
-                 const SSEMatrix &l2w);
+                 const MaterialInterface *const m);
 
         SSESpectrum Sample_Li(const SurfaceInteraction &from, float u1, float u2,
                               SSEVector *const wi, float *const pdf, OcclusionTester *const occ) const override;
@@ -68,8 +63,6 @@ namespace pixel {
         const ShapeInterface *shape;
         // Light material
         const MaterialInterface *material;
-        // Transformation matrices
-        SSEMatrix local_to_world, world_to_local;
     };
 
 }

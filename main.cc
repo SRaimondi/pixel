@@ -68,30 +68,29 @@ int main(int argc, char **argv) {
 
     pixel::PrimitiveList list;
 
-    pixel::ShapeInterface *s = new pixel::Sphere(pixel::SSEVector(0.f, 2.f, 0.f, 1.f), 2.f);
-    pixel::PrimitiveInterface *p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.9f, 0.f, 0.f)),
-                                                       pixel::SSEMatrix());
+    pixel::ShapeInterface *s = new pixel::Sphere(pixel::Translate(0.f, 2.f, 0.f), 2.f);
+    pixel::PrimitiveInterface *p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.9f, 0.f, 0.f)));
     list.AddPrimitive(p);
 
-    s = new pixel::Sphere(pixel::SSEVector(0.f, 2.f, 0.f, 1.f), 2.f);
-    p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.f, 0.9f, 0.f)), pixel::SSEMatrix());
-    //list.AddPrimitive(p);
+//    s = new pixel::Sphere(pixel::SSEVector(0.f, 2.f, 0.f, 1.f), 2.f);
+//    p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.f, 0.9f, 0.f)), pixel::SSEMatrix());
+//    //list.AddPrimitive(p);
+//
+//    s = new pixel::Sphere(pixel::SSEVector(-2.f, 6.f, 0.f, 1.f), 2.f);
+//    p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.f, 0.f, 0.9f)), pixel::SSEMatrix());
+//    //list.AddPrimitive(p);
+//
+//    s = new pixel::Sphere(pixel::SSEVector(2.f, 6.f, 0.f, 1.f), 2.f);
+//    p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.9f, 0.9f, 0.f)), pixel::SSEMatrix());
+//    //list.AddPrimitive(p);
 
-    s = new pixel::Sphere(pixel::SSEVector(-2.f, 6.f, 0.f, 1.f), 2.f);
-    p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.f, 0.f, 0.9f)), pixel::SSEMatrix());
-    //list.AddPrimitive(p);
-
-    s = new pixel::Sphere(pixel::SSEVector(2.f, 6.f, 0.f, 1.f), 2.f);
-    p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.9f, 0.9f, 0.f)), pixel::SSEMatrix());
-    //list.AddPrimitive(p);
-
-    s = new pixel::Rectangle(20.f, 20.f);
-    p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.f, 0.9f, 0.9f)), pixel::SSEMatrix());
+    s = new pixel::Rectangle(pixel::SSEMatrix(), 20.f, 20.f);
+    p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.f, 0.9f, 0.9f)));
     list.AddPrimitive(p);
 
 
-    s = new pixel::Rectangle(5.f, 5.f);
-    pixel::AreaLight *area_light = new pixel::AreaLight(s, new pixel::EmittingMaterial(pixel::SSESpectrum(1000.f)), pixel::Translate(0.f, 10.f, 0.f) * pixel::RotateX(-180.f));
+    s = new pixel::Rectangle(pixel::Translate(0.f, 10.f, 0.f) * pixel::RotateX(-180.f), 5.f, 5.f);
+    pixel::AreaLight *area_light = new pixel::AreaLight(s, new pixel::EmittingMaterial(pixel::SSESpectrum(1000.f)));
     list.AddPrimitive(area_light);
 
     // Create scene
@@ -106,7 +105,7 @@ int main(int argc, char **argv) {
 //    pixel::RendererInterface *renderer = new pixel::SamplerRenderer(
 //            new pixel::DebugIntegrator(pixel::DebugMode::DEBUG_BSDF), 1);
     pixel::RendererInterface *renderer = new pixel::SamplerRenderer(
-            new pixel::DirectIntegrator(), 128);
+            new pixel::DirectIntegrator(), 16);
 
     // Render image
     renderer->RenderImage(f, scene, *camera);
