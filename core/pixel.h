@@ -111,6 +111,12 @@ namespace pixel {
 
     class AreaLight;
 
+    class FresnelInterface;
+
+    class FresnelDielectric;
+
+    class FresnelIdeal;
+
     // Declare constant values
     static float EPS = 10e-5f;
     static float PI = 3.14159265f;

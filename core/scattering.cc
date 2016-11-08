@@ -29,6 +29,45 @@
 
 namespace pixel {
 
+    float FrDielectric(float cos_theta_i, float eta_i, float eta_t) {
+        cos_theta_i = Clamp(cos_theta_i, -1.f, 1.f);
+        // Check if we are entering
+        bool entering = cos_theta_i > 0.f;
+        if (!entering) {
+            std::swap(eta_i, eta_t);
+            cos_theta_i = std::abs(cos_theta_i);
+        }
+        // Compute cos_theta_t using Snell's law
+        float sin_theta_i = std::sqrt(std::max(0.f, 1.f - cos_theta_i * cos_theta_i));
+        float sin_theta_t = eta_i / eta_t * sin_theta_i;
+        // Handle total internal reflection
+        if (sin_theta_t >= 1.f) {
+            return 1.f;
+        }
+        float cos_theta_t = std::sqrt(std::max(0.f, 1.f - sin_theta_t * sin_theta_t));
+        float r_parl = ((eta_t * cos_theta_i) - (eta_i * cos_theta_t)) /
+                       ((eta_t * cos_theta_i) + (eta_i * cos_theta_t));
+        float r_perp = ((eta_i * cos_theta_i) - (eta_t * cos_theta_t)) /
+                       ((eta_i * cos_theta_i) + (eta_t * cos_theta_t));
+
+        return (r_parl * r_parl + r_perp * r_perp) * 0.5f;
+    }
+
+    FresnelInterface::~FresnelInterface() {
+    }
+
+    FresnelDielectric::FresnelDielectric(float eta_i, float eta_t)
+    : eta_i(eta_i), eta_t(eta_t) {
+    }
+
+    SSESpectrum FresnelDielectric::Evaluate(float cos_theta_i) const {
+        return FrDielectric(cos_theta_i, eta_i, eta_t);
+    }
+
+    SSESpectrum FresnelIdeal::Evaluate(float ) const {
+        return SSESpectrum(1.f);
+    }
+
     BSDF::BSDF(const SurfaceInteraction &interaction)
             : geometric_normal(interaction.normal), s(interaction.s), t(interaction.t), brdfs() {
     }

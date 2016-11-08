@@ -102,13 +102,43 @@ namespace pixel {
         return (v.y * w.y > 0.f);
     }
 
+    // Evaluate Fresnel term for dielectric material
+    float FrDielectric(float cos_theta_i, float eta_i, float eta_t);
+
+    // Define Fresnel interface
+    class FresnelInterface {
+    public:
+        // Destructor
+        virtual ~FresnelInterface();
+        // Evaluate Fresnel term
+        virtual SSESpectrum Evaluate(float cos_theta_i) const = 0;
+    };
+
+    // Dielectric Fresnel class
+    class FresnelDielectric : public FresnelInterface {
+    public:
+        // Constructor
+        FresnelDielectric(float eta_i, float eta_t);
+
+        SSESpectrum Evaluate(float cos_theta_i) const;
+
+    private:
+        float eta_i, eta_t;
+    };
+
+    // Ideal Fresnel class
+    class FresnelIdeal : public FresnelInterface {
+    public:
+        SSESpectrum Evaluate(float cos_theta_i) const;
+    };
+
     // Define different type of BRDF
     enum BRDF_TYPE {
         // One of these two
-                BRDF_REFLECTION = 1 << 0,
+        BRDF_REFLECTION = 1 << 0,
         BRDF_TRANSMISSION = 1 << 1,
         // Plus one of this
-                BRDF_DIFFUSE = 1 << 2,
+        BRDF_DIFFUSE = 1 << 2,
         BRDF_GLOSSY = 1 << 3,
         BRDF_SPECULAR = 1 << 4,
         ALL_BRDF = BRDF_REFLECTION | BRDF_TRANSMISSION | BRDF_DIFFUSE | BRDF_GLOSSY | BRDF_SPECULAR
@@ -199,6 +229,8 @@ namespace pixel {
         // Reflectance
         const SSESpectrum rho;
     };
+
+
 
 
 }

@@ -76,6 +76,14 @@ int main(int argc, char **argv) {
     p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.f, 0.9f, 0.f)));
     list.AddPrimitive(p);
 
+    s = new pixel::Sphere(pixel::Translate(0.f, 2.f, 3.f), 2.f);
+    p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.9f, 0.9f, 0.f)));
+    list.AddPrimitive(p);
+
+    s = new pixel::Sphere(pixel::Translate(0.f, 2.f, -3.f), 2.f);
+    p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.f, 0.1f, 0.9f)));
+    list.AddPrimitive(p);
+
 //    s = new pixel::Sphere(pixel::SSEVector(0.f, 2.f, 0.f, 1.f), 2.f);
 //    p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.f, 0.9f, 0.f)), pixel::SSEMatrix());
 //    //list.AddPrimitive(p);
