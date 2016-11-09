@@ -43,7 +43,7 @@ namespace pixel {
         // Constructor
         MatteMaterial(const SSESpectrum &rho);
 
-        BSDF *GetBSDF(const SurfaceInteraction &interaction) const override;
+        std::unique_ptr<BSDF> GetBSDF(const SurfaceInteraction &interaction) const override;
 
     private:
         // For the moment, simple color, no texture

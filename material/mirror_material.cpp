@@ -28,12 +28,13 @@
 namespace pixel {
 
     MirrorMaterial::MirrorMaterial(const SSESpectrum &R)
-    : MaterialInterface(MAT_SCATTERING), R(R) {
+            : MaterialInterface(MAT_SCATTERING), R(R) {
     }
 
-    BSDF *MirrorMaterial::GetBSDF(const SurfaceInteraction &interaction) const {
+    std::unique_ptr<BSDF> MirrorMaterial::GetBSDF(const SurfaceInteraction &interaction) const {
         // Allocate BSDF
-        BSDF *bsdf = new BSDF(interaction);
+        // BSDF *bsdf = new BSDF(interaction);
+        auto bsdf = std::make_unique<BSDF>(interaction);
 
         if (!IsBlack(R)) {
             bsdf->AddBRDF(new SpecularReflection(R, new FresnelIdeal()));

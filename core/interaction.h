@@ -36,6 +36,7 @@
 #include "sse_vector.h"
 #include "shape.h"
 #include "primitive.h"
+#include "scattering.h"
 
 namespace pixel {
 
@@ -44,6 +45,8 @@ namespace pixel {
     public:
         // Constructor
         SurfaceInteraction();
+
+//        ~SurfaceInteraction();
 
         SurfaceInteraction(const SSEVector &hit, const SSEVector &n,
                            const SSEVector &s, const SSEVector &t, float u, float v,
@@ -56,8 +59,8 @@ namespace pixel {
         // Spawn ray in given direction
         Ray SpawnRay(const SSEVector &dir, uint32_t depth = 0) const;
 
-        // Get BSDF
-        BSDF *GetBSDF() const;
+        // Generate the BSDF
+        void GenerateBSDF();
 
         // Hit point
         SSEVector hit_point;
@@ -71,6 +74,9 @@ namespace pixel {
         const PrimitiveInterface *prim_ptr;
         // Primitive material
         const MaterialInterface *mat_ptr;
+        // BSDF
+        std::unique_ptr<BSDF> bsdf;
+        // BSDF *bsdf;
     };
 
     // Transform surface_interaction for a given matrix

@@ -42,7 +42,7 @@ namespace pixel {
     public:
         MirrorMaterial(const SSESpectrum &R);
 
-        BSDF *GetBSDF(const SurfaceInteraction &interaction) const override;
+        std::unique_ptr<BSDF> GetBSDF(const SurfaceInteraction &interaction) const override;
 
     private:
         // Mirror reflectance

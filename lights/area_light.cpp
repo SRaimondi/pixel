@@ -36,7 +36,7 @@ namespace pixel {
     }
 
     SSESpectrum AreaLight::Sample_Li(const SurfaceInteraction &from, float u1, float u2,
-                                      SSEVector *const wi, float *const pdf, OcclusionTester *const occ) const {
+                                     SSEVector *const wi, float *const pdf, OcclusionTester *const occ) const {
         // Sample the shape
         SurfaceInteraction shape_sample = shape->Sample(from, u1, u2);
         if (SqrdLength(shape_sample.hit_point - from.hit_point) == 0.f) {
@@ -48,13 +48,13 @@ namespace pixel {
         // Compute pdf
         *pdf = shape->Pdf(from, *wi);
         // Fill occlusion tester
-        *occ = OcclusionTester(from, shape_sample.hit_point);
+        *occ = OcclusionTester(from.hit_point, shape_sample.hit_point);
 
         return material->Emission(shape_sample, -*wi);
     }
 
     float AreaLight::Pdf_Li(const SurfaceInteraction &from, const SSEVector &wi) const {
-        return 0;
+        return shape->Pdf(from, wi);
     }
 
     bool AreaLight::Intersect(const Ray &ray, SurfaceInteraction *const interaction) const {

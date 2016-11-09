@@ -55,7 +55,7 @@ namespace pixel {
         }
 
         // Creates the BSDF for a given SurfaceInteraction
-        virtual BSDF *GetBSDF(const SurfaceInteraction &interaction) const = 0;
+        virtual std::unique_ptr<BSDF> GetBSDF(const SurfaceInteraction &interaction) const = 0;
 
         // Evaluate the emission of the material at a given SurfaceInteraction in a given direction
         virtual SSESpectrum Emission(const SurfaceInteraction &, const SSEVector &) const {

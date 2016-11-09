@@ -59,15 +59,15 @@ namespace pixel {
     class OcclusionTester {
     public:
         // Constructor
-        OcclusionTester();
+        OcclusionTester() = default;
 
-        OcclusionTester(const SurfaceInteraction &si, const SSEVector &p);
+        OcclusionTester(const SSEVector &from, const SSEVector &p);
 
         // Check if the ray between the two interaction is occluded or not
         bool Unoccluded(const Scene &scene) const;
 
     private:
-        SurfaceInteraction si;
+        SSEVector from;
         SSEVector p;
     };
 

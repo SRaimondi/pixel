@@ -28,18 +28,18 @@
 namespace pixel {
 
     GlassMaterial::GlassMaterial(const SSESpectrum &R, const SSESpectrum &T, float i)
-    : MaterialInterface(MAT_SCATTERING), R(R), T(T), r_index(i) {
+            : MaterialInterface(MAT_SCATTERING), R(R), T(T), r_index(i) {
     }
 
-    BSDF *GlassMaterial::GetBSDF(const SurfaceInteraction &interaction) const {
+    std::unique_ptr<BSDF> GlassMaterial::GetBSDF(const SurfaceInteraction &interaction) const {
         // Allocate BSDF
-        BSDF *bsdf = new BSDF(interaction);
+        // BSDF *bsdf = new BSDF(interaction);
+        auto bsdf = std::make_unique<BSDF>(interaction);
 
         // Add simple Fresnel specular BRDF
         if (!IsBlack(R) && !IsBlack(T)) {
             bsdf->AddBRDF(new SpecularReflection(R, new FresnelDielectric(1.f, r_index)));
             bsdf->AddBRDF(new SpecularTransmission(T, 1.f, r_index));
-            // bsdf->AddBRDF(new FresnelSpecular(R, T, 1.f, r_index));
         }
 
         return bsdf;

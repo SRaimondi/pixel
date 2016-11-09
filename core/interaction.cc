@@ -23,14 +23,17 @@
  */
 
 #include "interaction.h"
-#include "sse_spectrum.h"
 #include "ray.h"
-#include "sse_matrix.h"
 #include "material.h"
 
 namespace pixel {
 
-    SurfaceInteraction::SurfaceInteraction() {}
+    SurfaceInteraction::SurfaceInteraction()
+            : hit_point(), normal(), s(), t(), u(0.f), v(0.f), prim_ptr(nullptr), mat_ptr(nullptr), bsdf(nullptr) {}
+
+//    SurfaceInteraction::~SurfaceInteraction() {
+//        delete bsdf;
+//    }
 
     SurfaceInteraction::SurfaceInteraction(const SSEVector &hit, const SSEVector &n,
                                            const SSEVector &s, const SSEVector &t, float u,
@@ -38,7 +41,7 @@ namespace pixel {
                                            const PrimitiveInterface *prim_ptr,
                                            const MaterialInterface *const mat_ptr)
             : hit_point(hit), normal(n), s(s), t(t), u(u), v(v),
-              prim_ptr(prim_ptr), mat_ptr(mat_ptr) {
+              prim_ptr(prim_ptr), mat_ptr(mat_ptr), bsdf(nullptr) {
     }
 
     SSESpectrum SurfaceInteraction::EmittedRadiance(const SSEVector &w) const {
@@ -49,10 +52,9 @@ namespace pixel {
         return Ray(hit_point, dir, EPS, INFINITY, depth);
     }
 
-    BSDF *SurfaceInteraction::GetBSDF() const {
-        return mat_ptr->GetBSDF(*this);
+    void SurfaceInteraction::GenerateBSDF() {
+        bsdf = mat_ptr->GetBSDF(*this);
     }
-
 
     void TransformSurfaceInteraction(SurfaceInteraction *const interaction, const SSEMatrix &mat) {
         // Transform hit_point

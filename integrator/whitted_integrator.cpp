@@ -33,7 +33,7 @@
 namespace pixel {
 
     WhittedIntegrator::WhittedIntegrator(uint32_t max_depth)
-    : max_depth(max_depth) {
+            : max_depth(max_depth) {
     }
 
     void WhittedIntegrator::Preprocess() const {
@@ -47,6 +47,8 @@ namespace pixel {
         if (!scene.Intersect(ray, &interaction)) {
             return L;
         }
+        // Generate BSDF
+        interaction.GenerateBSDF();
         // Compute wo
         SSEVector wo_world = Normalize(-ray.Direction());
         // Add emission

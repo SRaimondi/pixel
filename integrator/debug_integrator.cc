@@ -75,14 +75,13 @@ namespace pixel {
                 SurfaceInteraction interaction;
                 if (scene.Intersect(ray, &interaction)) {
                     // Get BSDF
-                    BSDF *bsdf = interaction.GetBSDF();
+                    interaction.GenerateBSDF();
                     // Fixed vertical light direction and power
                     SSESpectrum Li(5.f);
                     SSEVector wi(0.f, 1.f, 0.f, 0.f);
                     // Evaluate BSDF
-                    SSESpectrum f = bsdf->f(-Normalize(ray.Direction()), wi);
+                    SSESpectrum f = interaction.bsdf->f(-Normalize(ray.Direction()), wi);
                     L = f * Li * AbsDotProductSSE(wi, interaction.normal);
-                    delete bsdf;
                 }
                 break;
             }

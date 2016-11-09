@@ -52,14 +52,13 @@ namespace pixel {
         Ray current_ray = ray;
         // Current outgoing direction
         SSEVector wo_world;
-        // Interaction
-        SurfaceInteraction interaction;
         // Sampling BSDF
         SSEVector wi_world;
         float pdf;
         BRDF_TYPE brdf_type;
         bool specular_hit = false;
         for (uint32_t bounce = 0; bounce < max_depth; bounce++) {
+            SurfaceInteraction interaction;
             if (!scene.Intersect(current_ray, &interaction)) { break; }
             // Compute wo
             wo_world = Normalize(-current_ray.Direction());
@@ -70,11 +69,12 @@ namespace pixel {
             // Compute direct illumination
             L += alpha * DirectIllumination(interaction, wo_world, scene);
             // Sample the BSDF
-            BSDF *bsdf = interaction.GetBSDF();
-            SSESpectrum f = bsdf->Sample_f(wo_world, &wi_world, &pdf, distribution_path(generator_path), distribution_path(generator_path),
-                                           ALL_BRDF, &brdf_type);
+            interaction.GenerateBSDF();
+            SSESpectrum f = interaction.bsdf->Sample_f(wo_world, &wi_world, &pdf,
+                                                       distribution_path(generator_path),
+                                                       distribution_path(generator_path),
+                                                       ALL_BRDF, &brdf_type);
             if (IsBlack(f) || pdf == 0.f) {
-                delete bsdf;
                 break;
             }
             specular_hit = (brdf_type & BRDF_SPECULAR) != 0;
@@ -84,7 +84,6 @@ namespace pixel {
             alpha *= f * (cos_wi / pdf);
             // Update ray
             current_ray = interaction.SpawnRay(wi_world);
-            delete bsdf;
         }
 
         return L;

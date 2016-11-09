@@ -31,9 +31,10 @@ namespace pixel {
             : MaterialInterface(MAT_EMITTING), emission(e) {
     }
 
-    BSDF *EmittingMaterial::GetBSDF(const SurfaceInteraction &interaction) const {
-        // Allocate empty BSDF
-        BSDF *bsdf = new BSDF(interaction);
+    std::unique_ptr<BSDF> EmittingMaterial::GetBSDF(const SurfaceInteraction &interaction) const {
+        // Return empty BSDF
+        // BSDF * bsdf = new BSDF(interaction);
+        auto bsdf = std::make_unique<BSDF>(interaction);
 
         return bsdf;
     }

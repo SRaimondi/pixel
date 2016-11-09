@@ -45,7 +45,7 @@ namespace pixel {
     public:
         // Constructor
         AreaLight(const ShapeInterface *const s,
-                 const MaterialInterface *const m);
+                  const MaterialInterface *const m);
 
         SSESpectrum Sample_Li(const SurfaceInteraction &from, float u1, float u2,
                               SSEVector *const wi, float *const pdf, OcclusionTester *const occ) const override;

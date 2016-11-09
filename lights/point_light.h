@@ -46,7 +46,7 @@ namespace pixel {
         bool IsDeltaLight() const override;
 
         SSESpectrum Sample_Li(const SurfaceInteraction &from, float u1, float u2,
-                  SSEVector *const wi, float *const pdf, OcclusionTester *const occ) const override;
+                              SSEVector *const wi, float *const pdf, OcclusionTester *const occ) const override;
 
         float Pdf_Li(const SurfaceInteraction &from, const SSEVector &wi) const override;
 

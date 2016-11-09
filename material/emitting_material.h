@@ -43,7 +43,7 @@ namespace pixel {
         // Constructor
         EmittingMaterial(const SSESpectrum &e);
 
-        BSDF *GetBSDF(const SurfaceInteraction &interaction) const override;
+        std::unique_ptr<BSDF> GetBSDF(const SurfaceInteraction &interaction) const override;
 
         SSESpectrum Emission(const SurfaceInteraction &interaction, const SSEVector &w) const override;
 

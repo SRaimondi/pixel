@@ -27,17 +27,17 @@
 namespace pixel {
 
     PointLight::PointLight(const SSEVector &p, const SSESpectrum &i)
-    : position(p), intensity(i) {}
+            : position(p), intensity(i) {}
 
     bool PointLight::IsDeltaLight() const {
         return true;
     }
 
-    SSESpectrum PointLight::Sample_Li(const SurfaceInteraction &from, float , float ,
+    SSESpectrum PointLight::Sample_Li(const SurfaceInteraction &from, float, float,
                                       SSEVector *const wi, float *const pdf, OcclusionTester *const occ) const {
         *wi = Normalize(position - from.hit_point);
         *pdf = 1.f;
-        *occ = OcclusionTester(from, position);
+        *occ = OcclusionTester(from.hit_point, position);
 
         return (intensity / SSESqrdLength(position - from.hit_point));
     }

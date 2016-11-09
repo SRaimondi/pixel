@@ -51,8 +51,8 @@ namespace pixel {
     };
 
     // Estimate direct illumination at given SurfaceInteraction
-    SSESpectrum
-    DirectIllumination(const SurfaceInteraction &interaction, const SSEVector &wo_world, const Scene &scene);
+    SSESpectrum DirectIllumination(const SurfaceInteraction &interaction, const SSEVector &wo_world,
+                                   const Scene &scene);
 
     // Estimate specular reflection
     SSESpectrum SpecularReflection(const SurfaceInteraction &interaction, const SSEVector &wo_world,

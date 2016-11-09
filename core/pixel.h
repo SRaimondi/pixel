@@ -37,6 +37,7 @@
 #include <string>
 #include <complex>
 #include <vector>
+#include <memory>
 
 namespace pixel {
 

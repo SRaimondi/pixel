@@ -41,7 +41,7 @@ namespace pixel {
     public:
         GlassMaterial(const SSESpectrum &R, const SSESpectrum &T, float i);
 
-        BSDF *GetBSDF(const SurfaceInteraction &interaction) const override;
+        std::unique_ptr<BSDF> GetBSDF(const SurfaceInteraction &interaction) const override;
 
     private:
         // Reflection

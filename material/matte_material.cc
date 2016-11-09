@@ -31,9 +31,10 @@ namespace pixel {
             : MaterialInterface(MAT_SCATTERING), rho(rho) {
     }
 
-    BSDF *MatteMaterial::GetBSDF(const SurfaceInteraction &interaction) const {
+    std::unique_ptr<BSDF> MatteMaterial::GetBSDF(const SurfaceInteraction &interaction) const {
         // Allocate BSDF
-        BSDF *bsdf = new BSDF(interaction);
+        //BSDF *bsdf = new BSDF(interaction);
+        auto bsdf = std::make_unique<BSDF>(interaction);
 
         if (!IsBlack(rho)) {
             bsdf->AddBRDF(new LambertianReflection(rho));

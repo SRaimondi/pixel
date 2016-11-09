@@ -72,13 +72,13 @@ int main(int argc, char **argv) {
 
     pixel::PrimitiveList list;
 
-    pixel::ShapeInterface *s = new pixel::Sphere(pixel::Translate(-3.f, 2.f, 0.f), 2.f);
+    pixel::ShapeInterface *s = new pixel::Sphere(pixel::Translate(-4.f, 2.f, 0.f), 2.f);
     pixel::PrimitiveInterface *p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.9f, 0.f, 0.f)));
-    //list.AddPrimitive(p);
+    list.AddPrimitive(p);
 
-    s = new pixel::Sphere(pixel::Translate(3.f, 2.f, 0.f), 2.f);
+    s = new pixel::Sphere(pixel::Translate(4.f, 2.f, 0.f), 2.f);
     p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.f, 0.9f, 0.f)));
-    //list.AddPrimitive(p);
+    list.AddPrimitive(p);
 
     s = new pixel::Sphere(pixel::Translate(0.f, 2.f, 3.f), 2.f);
     //p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.9f, 0.9f, 0.f)));
@@ -134,11 +134,11 @@ int main(int argc, char **argv) {
     // Create renderer
 //    pixel::RendererInterface *renderer = new pixel::SamplerRenderer(
 //            new pixel::DebugIntegrator(pixel::DebugMode::DEBUB_HIT), 1);
-//    pixel::RendererInterface *renderer = new pixel::SamplerRenderer(
-//            new pixel::WhittedIntegrator(), 256);
     pixel::RendererInterface *renderer = new pixel::SamplerRenderer(
-            new pixel::PathTracerIntegrator(), 512
-    );
+            new pixel::WhittedIntegrator(), 16);
+//    pixel::RendererInterface *renderer = new pixel::SamplerRenderer(
+//            new pixel::PathTracerIntegrator(), 512
+//    );
 
     // Render image
     renderer->RenderImage(f, scene, *camera);
@@ -146,7 +146,7 @@ int main(int argc, char **argv) {
     // Create tone mapper
     pixel::ToneMapperInterface *t = new pixel::ClampToneMapper(1.f);
     // Process image and create it
-    t->Process(std::string("test_path.ppm"), *f);
+    t->Process(std::string("test.ppm"), *f);
 
     return 0;
 }
