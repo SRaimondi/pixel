@@ -36,7 +36,7 @@ namespace pixel {
         BSDF *bsdf = new BSDF(interaction);
 
         if (!IsBlack(rho)) {
-            bsdf->AddBRDF(new LambertianReflectionBRDF(rho));
+            bsdf->AddBRDF(new LambertianReflection(rho));
         }
 
         return bsdf;

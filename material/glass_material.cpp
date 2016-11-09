@@ -22,44 +22,27 @@
  * THE SOFTWARE.
  */
 
-
-#include "whitted_integrator.h"
-#include "interaction.h"
-#include "sse_spectrum.h"
-#include "scene.h"
-#include "ray.h"
-
+#include "glass_material.h"
+#include "scattering.h"
 
 namespace pixel {
 
-    WhittedIntegrator::WhittedIntegrator(uint32_t max_depth)
-    : max_depth(max_depth) {
+    GlassMaterial::GlassMaterial(const SSESpectrum &R, const SSESpectrum &T, float i)
+    : MaterialInterface(MAT_SCATTERING), R(R), T(T), r_index(i) {
     }
 
-    void WhittedIntegrator::Preprocess() const {
+    BSDF *GlassMaterial::GetBSDF(const SurfaceInteraction &interaction) const {
+        // Allocate BSDF
+        BSDF *bsdf = new BSDF(interaction);
 
-    }
-
-    SSESpectrum WhittedIntegrator::IncomingRadiance(const Ray &ray, const Scene &scene) const {
-        SSESpectrum L(0.f);
-        // Find nearest intersection
-        SurfaceInteraction interaction;
-        if (!scene.Intersect(ray, &interaction)) {
-            return L;
-        }
-        // Compute wo
-        SSEVector wo_world = Normalize(-ray.Direction());
-        // Add emission
-        L += interaction.EmittedRadiance(wo_world);
-        // Compute direct illumination at found interaction
-        L += DirectIllumination(interaction, wo_world, scene);
-
-        if (ray.RayDepth() < max_depth) {
-            L += SpecularReflection(interaction, wo_world, this, scene, ray.RayDepth() + 1);
-            L += SpecularRefraction(interaction, wo_world, this, scene, ray.RayDepth() + 1);
+        // Add simple Fresnel specular BRDF
+        if (!IsBlack(R) && !IsBlack(T)) {
+            bsdf->AddBRDF(new SpecularReflection(R, new FresnelDielectric(1.f, r_index)));
+            bsdf->AddBRDF(new SpecularTransmission(T, 1.f, r_index));
+            // bsdf->AddBRDF(new FresnelSpecular(R, T, 1.f, r_index));
         }
 
-        return L;
+        return bsdf;
     }
 
 }

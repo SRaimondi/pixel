@@ -90,6 +90,12 @@ set(SOURCE_FILES
         lights/area_light.h
         lights/area_light.cpp
         material/mirror_material.h
-        material/mirror_material.cpp integrator/whitted_integrator.h integrator/whitted_integrator.cpp)
+        material/mirror_material.cpp
+        integrator/whitted_integrator.h
+        integrator/whitted_integrator.cpp
+        material/glass_material.h
+        material/glass_material.cpp
+        integrator/path_tracer_integrator.h
+        integrator/path_tracer_integrator.cpp)
 
 add_executable(pixel ${SOURCE_FILES})

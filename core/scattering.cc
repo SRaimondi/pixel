@@ -213,8 +213,12 @@ namespace pixel {
     BRDF::~BRDF() {
     }
 
-    bool BRDF::MatchesTypes(const BRDF_TYPE types) const {
-        return ((type & types) == type);
+    bool BRDF::MatchesTypes(BRDF_TYPE types) const {
+        if (type <= types) {
+            return ((type & types) == type);
+        } else {
+            return ((type & types) == types);
+        }
     }
 
     SSESpectrum BRDF::Sample_f(const SSEVector &wo, SSEVector *const wi, float *const pdf,
@@ -233,11 +237,11 @@ namespace pixel {
         return SameHemisphere(wo, wi) ? AbsCosTheta(wi) * ONE_OVER_PI : 0.f;
     }
 
-    LambertianReflectionBRDF::LambertianReflectionBRDF(const SSESpectrum &r)
+    LambertianReflection::LambertianReflection(const SSESpectrum &r)
             : BRDF(BRDF_TYPE(BRDF_REFLECTION | BRDF_DIFFUSE)), rho(r) {
     }
 
-    SSESpectrum LambertianReflectionBRDF::f(const SSEVector &wo, const SSEVector &wi) const {
+    SSESpectrum LambertianReflection::f(const SSEVector &wo, const SSEVector &wi) const {
         return (rho * ONE_OVER_PI);
     }
 
@@ -245,13 +249,17 @@ namespace pixel {
             : BRDF(BRDF_TYPE(BRDF_REFLECTION | BRDF_SPECULAR)), R(R), fresnel(f) {
     }
 
+    SpecularReflection::~SpecularReflection() {
+        delete fresnel;
+    }
+
     SSESpectrum SpecularReflection::f(const SSEVector &, const SSEVector &) const {
         return SSESpectrum(0.f);
     }
 
     SSESpectrum SpecularReflection::Sample_f(const SSEVector &wo, SSEVector *const wi,
-                                             float *const pdf, float , float ,
-                                             BRDF_TYPE *const ) const {
+                                             float *const pdf, float, float,
+                                             BRDF_TYPE *const) const {
         // Compute perfect specular direction
         *wi = SSEVector(-wo.x, wo.y, -wo.z, 0.f);
         *pdf = 1.f;
@@ -263,4 +271,101 @@ namespace pixel {
     float SpecularReflection::Pdf(const SSEVector &, const SSEVector &) const {
         return 0.f;
     }
+
+    SpecularTransmission::SpecularTransmission(const SSESpectrum &T, float eta_a, float eta_b)
+            : BRDF(BRDF_TYPE(BRDF_TRANSMISSION | BRDF_SPECULAR)),
+              T(T), eta_a(eta_a), eta_b(eta_b),
+              fresnel(eta_a, eta_b) {
+    }
+
+    SSESpectrum SpecularTransmission::f(const SSEVector &, const SSEVector &) const {
+        return SSESpectrum(0.f);
+    }
+
+    SSESpectrum SpecularTransmission::Sample_f(const SSEVector &wo, SSEVector *const wi,
+                                               float *const pdf, float, float,
+                                               BRDF_TYPE *const) const {
+        // Find out if we are entering or exiting
+        bool entering = CosTheta(wo) > 0.f;
+        float eta_i = entering ? eta_a : eta_b;
+        float eta_t = entering ? eta_b : eta_a;
+
+        // Find normal
+        SSEVector normal = entering ? SSEVector(0.f, 1.f, 0.f, 0.f) : SSEVector(0.f, -1.f, 0.f, 0.f);
+        // Check if we have total internal refraction
+        if (!Refract(wo, normal, eta_i / eta_t, wi)) {
+            return SSESpectrum(0.f);
+        }
+        *pdf = 1.f;
+
+        return ((eta_i * eta_i) / (eta_t * eta_t) * T * (SSESpectrum(1.f) - fresnel.Evaluate(CosTheta(*wi))));
+    }
+
+    float SpecularTransmission::Pdf(const SSEVector &, const SSEVector &) const {
+        return 0.f;
+    }
+
+//    FresnelSpecular::FresnelSpecular(const SSESpectrum &R, const SSESpectrum &T, float eta_a, float eta_b)
+//            : BRDF(BRDF_TYPE(BRDF_REFLECTION | BRDF_TRANSMISSION | BRDF_SPECULAR)),
+//              R(R), T(T),
+//              eta_a(eta_a), eta_b(eta_b),
+//              fresnel(eta_a, eta_b) {
+//    }
+//
+//    SSESpectrum FresnelSpecular::f(const SSEVector &, const SSEVector &) const {
+//        return SSESpectrum(0.f);
+//    }
+//
+//    SSESpectrum FresnelSpecular::Sample_f(const SSEVector &wo, SSEVector *const wi,
+//                                          float *const pdf, float u1, float,
+//                                          BRDF_TYPE *const sampled_type) const {
+//        // Find out if we are entering or exiting
+//        bool entering = CosTheta(wo) > 0.f;
+//        float eta_i = entering ? eta_a : eta_b;
+//        float eta_t = entering ? eta_b : eta_a;
+//        // Find normal
+//        SSEVector normal = entering ? SSEVector(0.f, 1.f, 0.f, 0.f) : SSEVector(0.f, -1.f, 0.f, 0.f);
+//
+//        // Check for refraction
+//        if (!Refract(wo, normal, eta_i / eta_t, wi)) {
+//            // Reflect ray
+//            *wi = SSEVector(-wo.x, wo.y, -wo.z, 0.f);
+//            *pdf = 1.f;
+//            if (sampled_type) {
+//                *sampled_type = BRDF_TYPE(BRDF_SPECULAR | BRDF_REFLECTION);
+//            }
+//
+//            return R;
+//        }
+//
+//        // Evaluate Fresnel term
+//        float F = FrDielectric(CosTheta(wo), eta_i, eta_t);
+//        if (u1 < F) {
+//            // Compute perfect specular direction
+//            *wi = SSEVector(-wo.x, wo.y, -wo.z, 0.f);
+//            *pdf = F;
+//            if (sampled_type) {
+//                *sampled_type = BRDF_TYPE(BRDF_SPECULAR | BRDF_REFLECTION);
+//            }
+//
+//            return (F * R);
+//        } else {
+//            // Find normal
+////            SSEVector normal = entering ? SSEVector(0.f, 1.f, 0.f, 0.f) : SSEVector(0.f, -1.f, 0.f, 0.f);
+//            // Check if we have total internal refraction
+//            if (!Refract(wo, normal, eta_i / eta_t, wi)) {
+//                return SSESpectrum(0.f);
+//            }
+//            *pdf = 1.f - F;
+//            if (sampled_type) {
+//                *sampled_type = BRDF_TYPE(BRDF_SPECULAR | BRDF_TRANSMISSION);
+//            }
+//
+//            return (eta_i * eta_i) / (eta_t * eta_t) * T * (SSESpectrum(1.f) - fresnel.Evaluate(CosTheta(*wi)));
+//        }
+//    }
+//
+//    float FresnelSpecular::Pdf(const SSEVector &, const SSEVector &) const {
+//        return 0.f;
+//    }
 }

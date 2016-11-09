@@ -59,6 +59,11 @@ namespace pixel {
                                    const SurfaceIntegratorInterface *const integrator, const Scene &scene,
                                    uint32_t depth);
 
+    // Estimate specular refraction
+    SSESpectrum SpecularRefraction(const SurfaceInteraction &interaction, const SSEVector &wo_world,
+                                   const SurfaceIntegratorInterface *const integrator, const Scene &scene,
+                                   uint32_t depth);
+
 }
 
 #endif /* INTEGRATOR_H */

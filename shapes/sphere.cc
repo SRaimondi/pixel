@@ -78,8 +78,7 @@ namespace pixel {
         }
         float theta = std::acos((interaction->hit_point.y) / radius);
         interaction->s = SSEVector(std::sin(phi), 0.f, -std::cos(phi), 0.f);
-        interaction->t = SSEVector(std::cos(theta) * std::cos(phi), -std::sin(theta), std::cos(theta) * std::sin(phi),
-                                   0.f);
+        interaction->t = SSEVector(std::cos(theta) * std::cos(phi), -std::sin(theta), std::cos(theta) * std::sin(phi), 0.f);
         interaction->u = phi / TWO_PI;
         interaction->v = theta / PI;
 

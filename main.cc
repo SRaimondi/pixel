@@ -44,6 +44,7 @@
 #include "sampler_renderer.h"
 #include "debug_integrator.h"
 #include "direct_integrator.h"
+#include "path_tracer_integrator.h"
 #include "whitted_integrator.h"
 #include "interaction.h"
 #include "shape_list.h"
@@ -53,6 +54,7 @@
 #include "matte_material.h"
 #include "emitting_material.h"
 #include "mirror_material.h"
+#include "glass_material.h"
 #include "prim_list.h"
 #include "point_light.h"
 #include "area_light.h"
@@ -64,7 +66,7 @@ int main(int argc, char **argv) {
 
     // Create camera
     pixel::CameraInterface *camera = new pixel::PinholeCamera(
-            pixel::SSEVector(15.f, 20.f, 20.f, 1.f), pixel::SSEVector(0.f, 0.f, 0.f, 1.f),
+            pixel::SSEVector(-15.f, 20.f, 20.f, 1.f), pixel::SSEVector(0.f, 0.f, 0.f, 1.f),
             pixel::SSEVector(0.f, 1.f, 0.f, 0.f),
             60.f, f->GetWidth(), f->GetHeight());
 
@@ -72,14 +74,15 @@ int main(int argc, char **argv) {
 
     pixel::ShapeInterface *s = new pixel::Sphere(pixel::Translate(-3.f, 2.f, 0.f), 2.f);
     pixel::PrimitiveInterface *p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.9f, 0.f, 0.f)));
-    list.AddPrimitive(p);
+    //list.AddPrimitive(p);
 
     s = new pixel::Sphere(pixel::Translate(3.f, 2.f, 0.f), 2.f);
     p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.f, 0.9f, 0.f)));
-    list.AddPrimitive(p);
+    //list.AddPrimitive(p);
 
     s = new pixel::Sphere(pixel::Translate(0.f, 2.f, 3.f), 2.f);
-    p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.9f, 0.9f, 0.f)));
+    //p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.9f, 0.9f, 0.f)));
+    p = new pixel::Instance(s, new pixel::GlassMaterial(pixel::SSESpectrum(0.8f), pixel::SSESpectrum(0.8f), 1.3f));
     list.AddPrimitive(p);
 
     s = new pixel::Sphere(pixel::Translate(0.f, 2.f, -3.f), 2.f);
@@ -106,7 +109,7 @@ int main(int argc, char **argv) {
 //    //list.AddPrimitive(p);
 
     s = new pixel::Rectangle(pixel::SSEMatrix(), 20.f, 20.f);
-    p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.f, 0.9f, 0.9f)));
+    p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.1f, 0.9f, 0.9f)));
     //p = new pixel::Instance(s, new pixel::MirrorMaterial(pixel::SSESpectrum(0.9f)));
     list.AddPrimitive(p);
 
@@ -131,8 +134,11 @@ int main(int argc, char **argv) {
     // Create renderer
 //    pixel::RendererInterface *renderer = new pixel::SamplerRenderer(
 //            new pixel::DebugIntegrator(pixel::DebugMode::DEBUB_HIT), 1);
+//    pixel::RendererInterface *renderer = new pixel::SamplerRenderer(
+//            new pixel::WhittedIntegrator(), 256);
     pixel::RendererInterface *renderer = new pixel::SamplerRenderer(
-            new pixel::WhittedIntegrator(), 64);
+            new pixel::PathTracerIntegrator(), 512
+    );
 
     // Render image
     renderer->RenderImage(f, scene, *camera);
@@ -140,7 +146,7 @@ int main(int argc, char **argv) {
     // Create tone mapper
     pixel::ToneMapperInterface *t = new pixel::ClampToneMapper(1.f);
     // Process image and create it
-    t->Process(std::string("test_sphere.ppm"), *f);
+    t->Process(std::string("test_path.ppm"), *f);
 
     return 0;
 }

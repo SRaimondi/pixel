@@ -79,13 +79,15 @@ namespace pixel {
 
     class IntegratorInterface;
 
+    class SurfaceIntegratorInterface;
+
     class DebugIntegrator;
 
     class DirectIntegrator;
 
     class WhittedIntegrator;
 
-    class SurfaceIntegratorInterface;
+    class PathTracerIntegrator;
 
     class Scene;
 
@@ -97,6 +99,14 @@ namespace pixel {
 
     class BRDF;
 
+    class LambertianReflection;
+
+    class SpecularReflection;
+
+    class SpecularTransmission;
+
+    // class FresnelSpecular;
+
     class BSDF;
 
     class MaterialInterface;
@@ -106,6 +116,8 @@ namespace pixel {
     class EmittingMaterial;
 
     class MirrorMaterial;
+
+    class GlassMaterial;
 
     class LightInterface;
 

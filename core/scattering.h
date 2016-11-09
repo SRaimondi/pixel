@@ -136,10 +136,10 @@ namespace pixel {
     // Define different type of BRDF
     enum BRDF_TYPE {
         // One of these two
-                BRDF_REFLECTION = 1 << 0,
+        BRDF_REFLECTION = 1 << 0,
         BRDF_TRANSMISSION = 1 << 1,
         // Plus one of this
-                BRDF_DIFFUSE = 1 << 2,
+        BRDF_DIFFUSE = 1 << 2,
         BRDF_GLOSSY = 1 << 3,
         BRDF_SPECULAR = 1 << 4,
         ALL_BRDF = BRDF_REFLECTION | BRDF_TRANSMISSION | BRDF_DIFFUSE | BRDF_GLOSSY | BRDF_SPECULAR
@@ -200,7 +200,7 @@ namespace pixel {
         virtual ~BRDF();
 
         // Check if BRDF matches given type
-        bool MatchesTypes(const BRDF_TYPE types) const;
+        bool MatchesTypes(BRDF_TYPE types) const;
 
         // Evaluate BRDF
         virtual SSESpectrum f(const SSEVector &wo, const SSEVector &wi) const = 0;
@@ -219,10 +219,10 @@ namespace pixel {
 
     // Lambertian BRDF
 
-    class LambertianReflectionBRDF : public BRDF {
+    class LambertianReflection : public BRDF {
     public:
         // Constructor
-        LambertianReflectionBRDF(const SSESpectrum &r);
+        LambertianReflection(const SSESpectrum &r);
 
         SSESpectrum f(const SSEVector &wo, const SSEVector &wi) const override;
 
@@ -238,9 +238,12 @@ namespace pixel {
         // Constructor
         SpecularReflection(const SSESpectrum &R, FresnelInterface *const f);
 
+        ~SpecularReflection();
+
         SSESpectrum f(const SSEVector &wo, const SSEVector &wi) const override;
 
-        SSESpectrum Sample_f(const SSEVector &wo, SSEVector *const wi, float *const pdf, float u1, float u2,
+        SSESpectrum Sample_f(const SSEVector &wo, SSEVector *const wi,
+                             float *const pdf, float u1, float u2,
                              BRDF_TYPE *const sampled_type) const override;
 
         float Pdf(const SSEVector &wo, const SSEVector &wi) const override;
@@ -251,6 +254,50 @@ namespace pixel {
         const FresnelInterface *fresnel;
     };
 
+    // Specular transmission BRDF
+
+    class SpecularTransmission : public BRDF {
+    public:
+        // Constructor
+        SpecularTransmission(const SSESpectrum &T, float eta_a, float eta_b);
+
+        SSESpectrum f(const SSEVector &wo, const SSEVector &wi) const override;
+
+        SSESpectrum Sample_f(const SSEVector &wo, SSEVector *const wi,
+                             float *const pdf, float u1, float u2,
+                             BRDF_TYPE *const sampled_type) const override;
+
+        float Pdf(const SSEVector &wo, const SSEVector &wi) const override;
+
+    private:
+        // Transmission
+        const SSESpectrum T;
+        const float eta_a, eta_b;
+        const FresnelDielectric fresnel;
+    };
+
+
+    // Combined Fresnel specular BRDF
+
+//    class FresnelSpecular : public BRDF {
+//    public:
+//        // Constructor
+//        FresnelSpecular(const SSESpectrum &R, const SSESpectrum &T, float eta_a, float eta_b);
+//
+//        SSESpectrum f(const SSEVector &wo, const SSEVector &wi) const override;
+//
+//        SSESpectrum Sample_f(const SSEVector &wo, SSEVector *const wi,
+//                             float *const pdf, float u1, float u2,
+//                             BRDF_TYPE *const sampled_type) const override;
+//
+//        float Pdf(const SSEVector &wo, const SSEVector &wi) const override;
+//
+//    private:
+//        // Reflection and transmission
+//        const SSESpectrum R, T;
+//        const float eta_a, eta_b;
+//        const FresnelDielectric fresnel;
+//    };
 }
 
 #endif /* SCATTERING_H */

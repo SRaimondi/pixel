@@ -92,4 +92,26 @@ namespace pixel {
         return Ls;
     }
 
+    SSESpectrum SpecularRefraction(const SurfaceInteraction &interaction, const SSEVector &wo_world,
+                                   const SurfaceIntegratorInterface *const integrator, const Scene &scene,
+                                   uint32_t depth) {
+        SSESpectrum Ls(0.f);
+        // Get BSDF
+        BSDF *bsdf = interaction.GetBSDF();
+        // Type of BRDF to check for direct illumination
+        BRDF_TYPE brdf_types = BRDF_TYPE(BRDF_TRANSMISSION | BRDF_SPECULAR);
+        // Sample specular BRDF
+        SSEVector world_wi;
+        float pdf;
+        SSESpectrum f = bsdf->Sample_f(wo_world, &world_wi, &pdf, distribution(generator), distribution(generator), brdf_types);
+        if (pdf > 0.f && !IsBlack(f)) {
+            // Create specular ray
+            Ray specular_ray = interaction.SpawnRay(world_wi, depth);
+            Ls = f * integrator->IncomingRadiance(specular_ray, scene) / pdf;
+        }
+        delete bsdf;
+
+        return Ls;
+    }
+
 }

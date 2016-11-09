@@ -22,44 +22,36 @@
  * THE SOFTWARE.
  */
 
+/*
+ * File:   glass_material.h
+ * Author: simon
+ *
+ * Created on November 8, 2016, 10:50 PM
+ */
 
-#include "whitted_integrator.h"
-#include "interaction.h"
-#include "sse_spectrum.h"
-#include "scene.h"
-#include "ray.h"
+#ifndef PIXEL_GLASS_MATERIAL_H
+#define PIXEL_GLASS_MATERIAL_H
 
+#include "pixel.h"
+#include "material.h"
 
 namespace pixel {
 
-    WhittedIntegrator::WhittedIntegrator(uint32_t max_depth)
-    : max_depth(max_depth) {
-    }
+    class GlassMaterial : public MaterialInterface {
+    public:
+        GlassMaterial(const SSESpectrum &R, const SSESpectrum &T, float i);
 
-    void WhittedIntegrator::Preprocess() const {
+        BSDF *GetBSDF(const SurfaceInteraction &interaction) const override;
 
-    }
-
-    SSESpectrum WhittedIntegrator::IncomingRadiance(const Ray &ray, const Scene &scene) const {
-        SSESpectrum L(0.f);
-        // Find nearest intersection
-        SurfaceInteraction interaction;
-        if (!scene.Intersect(ray, &interaction)) {
-            return L;
-        }
-        // Compute wo
-        SSEVector wo_world = Normalize(-ray.Direction());
-        // Add emission
-        L += interaction.EmittedRadiance(wo_world);
-        // Compute direct illumination at found interaction
-        L += DirectIllumination(interaction, wo_world, scene);
-
-        if (ray.RayDepth() < max_depth) {
-            L += SpecularReflection(interaction, wo_world, this, scene, ray.RayDepth() + 1);
-            L += SpecularRefraction(interaction, wo_world, this, scene, ray.RayDepth() + 1);
-        }
-
-        return L;
-    }
+    private:
+        // Reflection
+        const SSESpectrum R;
+        // Transmission
+        const SSESpectrum T;
+        // Refraction index
+        const float r_index;
+    };
 
 }
+
+#endif //PIXEL_GLASS_MATERIAL_H

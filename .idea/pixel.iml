@@ -2,72 +2,76 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/shapes/sphere.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/shapes/rectangle.cc" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/shapes/sphere.cc" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/shapes/rectangle.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/film/box_film.cc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/film/box_film.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/primitives/prim_list.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/primitives/instance.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/primitives/instance.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/primitives/prim_list.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/lights/area_light.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/lights/area_light.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/lights/point_light.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/lights/area_light.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/lights/point_light.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/tonemapper/clamp_tonemapper.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/tonemapper/clamp_tonemapper.cc" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/renderer/sampler_renderer.cc" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/renderer/sampler_renderer.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/main.cc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/shapes/sphere.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/shapes/rectangle.cc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/shapes/sphere.cc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/shapes/rectangle.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/camera/pinhole_camera.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/camera/pinhole_camera.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/ray.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/core/material.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/light.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/core/montecarlo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/film.cc" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/core/shape.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/bbox.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/film.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/tonemapper.cc" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/core/sse_matrix.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/core/tonemapper.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/material.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/transform.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/integrator.cc" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/core/sse_spectrum.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/shape.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/bbox.cc" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/core/bbox.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/scattering.cc" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/core/scene.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/scattering.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/tonemapper.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/sse_matrix.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/sse_vector.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/integrator.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/core/light.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/scene.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/shape.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/primitive.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/light.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/renderer.cc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/sse_spectrum.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/sse_matrix.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/montecarlo.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/camera.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/transform.cc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/montecarlo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/ray.cc" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/core/renderer.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/pixel.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/core/scattering.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/core/sse_matrix.cc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/renderer.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/interaction.cc" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/core/transform.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/scene.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/interaction.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/main.cc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/renderer/sampler_renderer.cc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/renderer/sampler_renderer.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/material/emitting_material.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/material/matte_material.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/material/mirror_material.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/material/matte_material.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/material/mirror_material.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/material/glass_material.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/material/emitting_material.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/film/box_film.cc" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/film/box_film.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/material/matte_material.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/material/glass_material.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/material/mirror_material.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/integrator/whitted_integrator.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/integrator/whitted_integrator.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/integrator/direct_integrator.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/integrator/debug_integrator.cc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/integrator/path_tracer_integrator.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/integrator/path_tracer_integrator.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/integrator/debug_integrator.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/integrator/direct_integrator.h" isTestSource="false" />
     </content>
