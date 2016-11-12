@@ -26,17 +26,19 @@
 
 namespace pixel {
 
-    BBox::BBox()
-            : min(INFINITY, INFINITY, INFINITY, 1.f), max(-INFINITY, -INFINITY, -INFINITY, 1.f) {
+    BBox::BBox() {
+        bounds[0] = SSEVector(INFINITY, INFINITY, INFINITY, 1.f);
+        bounds[1] = SSEVector(-INFINITY, -INFINITY, -INFINITY, 1.f);
     }
 
-    BBox::BBox(const SSEVector &p)
-            : min(p), max(p) {
+    BBox::BBox(const SSEVector &p) {
+        bounds[0] = p;
+        bounds[1] = p;
     }
 
-    BBox::BBox(const SSEVector &p1, const SSEVector &p2)
-            : min(FMin(p1.x, p2.x), FMin(p1.y, p2.y), FMin(p1.z, p2.z), 1.f),
-              max(FMax(p1.x, p2.x), FMax(p1.y, p2.y), FMax(p1.z, p2.z), 1.f) {
+    BBox::BBox(const SSEVector &p1, const SSEVector &p2) {
+        bounds[0] = SSEVector(FMin(p1.x, p2.x), FMin(p1.y, p2.y), FMin(p1.z, p2.z), 1.f);
+        bounds[1] = SSEVector(FMax(p1.x, p2.x), FMax(p1.y, p2.y), FMax(p1.z, p2.z), 1.f);
     }
 
     BBox BBoxUnion(const BBox &b1, const BBox &b2) {

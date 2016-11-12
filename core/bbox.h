@@ -34,6 +34,7 @@
 
 #include "pixel.h"
 #include "sse_vector.h"
+#include "ray.h"
 
 namespace pixel {
 
@@ -48,28 +49,53 @@ namespace pixel {
 
         BBox(const SSEVector &p1, const SSEVector &p2);
 
+        // Compute intersection of ray with BBox
+        inline bool IntersectP(const Ray &ray) const {
+            // Compute sign of direction
+            int dir_is_neg[3] = { ray.Direction().x < 0.f, ray.Direction().y < 0.f, ray.Direction().z < 0.f};
+            // Check intersection against x and y
+            float t_min = (bounds[dir_is_neg[0]].x - ray.Origin().x) * ray.InvDirection().x;
+            float t_max = (bounds[1 - dir_is_neg[0]].x - ray.Origin().x) * ray.InvDirection().x;
+            float ty_min = (bounds[dir_is_neg[1]].y - ray.Origin().y) * ray.InvDirection().y;
+            float ty_max = (bounds[1 - dir_is_neg[1]].y - ray.Origin().y) * ray.InvDirection().y;
+
+            if (t_min > ty_max || ty_min > t_max) { return false; }
+            if (ty_min > t_min) { t_min = ty_min; }
+            if (ty_max < t_max) { t_max = ty_max; }
+
+            // Check against against z
+            float tz_min = (bounds[dir_is_neg[2]].z - ray.Origin().z) * ray.InvDirection().z;
+            float tz_max = (bounds[1 - dir_is_neg[2]].z - ray.Origin().z) * ray.InvDirection().z;
+
+            if (t_min > tz_max || tz_min > t_max) { return false; }
+            if (tz_min > t_min) { t_min = tz_min; }
+            if (tz_max < t_max) { t_max = tz_max; }
+
+            return ((t_min < ray.RayMaximum()) && t_max > 0.f);
+        }
+
         // Access minimum and maximum
 
         inline const SSEVector &Min() const {
-            return min;
+            return bounds[0];
         }
 
         inline const SSEVector &Max() const {
-            return max;
+            return bounds[1];
         }
 
         // Access bounding points by index
         inline const SSEVector &operator[](uint32_t i) const {
-            return (i == 0) ? min : max;
+            return (i == 0) ? bounds[0] : bounds[1];
         }
 
         inline SSEVector &operator[](uint32_t i) {
-            return (i == 0) ? min : max;
+            return (i == 0) ? bounds[0] : bounds[1];
         }
 
     private:
         // Maximum and minimum
-        SSEVector min, max;
+        SSEVector bounds[2];
     };
 
     // Compute the union between two BBox
