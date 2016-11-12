@@ -40,13 +40,13 @@ namespace pixel {
 
     class MirrorMaterial : public MaterialInterface {
     public:
-        MirrorMaterial(const SSESpectrum &R);
+        MirrorMaterial(const std::shared_ptr<const TextureInterface<SSESpectrum>> &Km);
 
         std::unique_ptr<BSDF> GetBSDF(const SurfaceInteraction &interaction) const override;
 
     private:
         // Mirror reflectance
-        const SSESpectrum R;
+        const std::shared_ptr<const TextureInterface<SSESpectrum>> Km;
     };
 
 }

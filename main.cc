@@ -47,7 +47,6 @@
 #include "path_tracer_integrator.h"
 #include "whitted_integrator.h"
 #include "interaction.h"
-#include "shape_list.h"
 #include "instance.h"
 #include "transform.h"
 #include "rectangle.h"
@@ -58,11 +57,13 @@
 #include "prim_list.h"
 #include "point_light.h"
 #include "area_light.h"
+#include "constant_texture.h"
+#include "checkboard_texture.h"
 
 int main(int argc, char **argv) {
 
     // Create film
-    pixel::Film *f = new pixel::BoxFilterFilm(1024, 1024);
+    pixel::Film *f = new pixel::BoxFilterFilm(512, 512);
 
     // Create camera
     pixel::CameraInterface *camera = new pixel::PinholeCamera(
@@ -72,70 +73,68 @@ int main(int argc, char **argv) {
 
     pixel::PrimitiveList list;
 
-    pixel::ShapeInterface *s = new pixel::Sphere(pixel::Translate(-4.f, 2.f, 0.f), 2.f);
-    pixel::PrimitiveInterface *p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.9f, 0.f, 0.f)));
-    list.AddPrimitive(p);
+    // Create textures
+    auto red_tex = std::make_shared<const pixel::ConstantTexture<pixel::SSESpectrum>>(
+            pixel::SSESpectrum(0.9f, 0.f, 0.f));
+    auto green_tex = std::make_shared<const pixel::ConstantTexture<pixel::SSESpectrum>>(
+            pixel::SSESpectrum(0.f, 0.9f, 0.f));
+    auto green2_tex = std::make_shared<const pixel::ConstantTexture<pixel::SSESpectrum>>(
+            pixel::SSESpectrum(0.1f, 0.9f, 0.9f));
+    auto violet_tex = std::make_shared<const pixel::ConstantTexture<pixel::SSESpectrum>>(
+            pixel::SSESpectrum(0.8f, 0.f, 0.8f));
+    auto sigma_tex = std::make_shared<const pixel::ConstantTexture<float>>(0.f);
+    auto ref_tex = std::make_shared<const pixel::ConstantTexture<float>>(1.3f);
+    auto mirror_tex = std::make_shared<const pixel::ConstantTexture<pixel::SSESpectrum>>(pixel::SSESpectrum(0.9f));
+    auto emission_tex = std::make_shared<const pixel::ConstantTexture<pixel::SSESpectrum>>(pixel::SSESpectrum(20.f));
 
-    s = new pixel::Sphere(pixel::Translate(4.f, 2.f, 0.f), 2.f);
-    p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.f, 0.9f, 0.f)));
-    list.AddPrimitive(p);
+    // Create texture mapping
+    auto uv_map = std::make_shared<const pixel::UVMapping2D>(10.f, 10.f, 0.f, 0.f);
+    auto checkboard_tex = std::make_shared<const pixel::CheckboardTexture<pixel::SSESpectrum>>(uv_map, green2_tex,
+                                                                                               violet_tex);
 
-    s = new pixel::Sphere(pixel::Translate(0.f, 2.f, 3.f), 2.f);
-    //p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.9f, 0.9f, 0.f)));
-    p = new pixel::Instance(s, new pixel::GlassMaterial(pixel::SSESpectrum(0.8f), pixel::SSESpectrum(0.8f), 1.3f));
-    list.AddPrimitive(p);
+    // Create shapes
+    auto s1 = std::make_shared<const pixel::Sphere>(pixel::Translate(-4.f, 2.f, 0.f), 2.f);
+    auto m1 = std::make_shared<const pixel::MatteMaterial>(red_tex, sigma_tex);
+    auto p1 = std::make_shared<const pixel::Instance>(s1, m1);
+    list.AddPrimitive(p1.get());
 
-    s = new pixel::Sphere(pixel::Translate(0.f, 2.f, -3.f), 2.f);
-    //p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.f, 0.1f, 0.9f)));
-    p = new pixel::Instance(s, new pixel::MirrorMaterial(pixel::SSESpectrum(0.9f)));
-    list.AddPrimitive(p);
+    auto s2 = std::make_shared<const pixel::Sphere>(pixel::Translate(4.f, 2.f, 0.f), 2.f);
+    auto m2 = std::make_shared<const pixel::MatteMaterial>(green_tex, sigma_tex);
+    auto p2 = std::make_shared<const pixel::Instance>(s2, m2);
+    list.AddPrimitive(p2.get());
 
+    auto s3 = std::make_shared<const pixel::Sphere>(pixel::Translate(0.f, 2.f, 3.f), 2.f);
+    auto g1 = std::make_shared<const pixel::GlassMaterial>(mirror_tex, mirror_tex, ref_tex);
+    auto p3 = std::make_shared<const pixel::Instance>(s3, g1);
+    list.AddPrimitive(p3.get());
 
-//    pixel::Ray r = pixel::Ray(pixel::SSEVector(0.f, 5.f, 0.f, 1.f), pixel::SSEVector(0.f, -1.f, 0.f, 0.f));
-//    pixel::SurfaceInteraction interaction;
-//    float thit;
-//    bool hit = s->Intersect(r, &thit, &interaction);
+    auto s4 = std::make_shared<const pixel::Sphere>(pixel::Translate(0.f, 2.f, -4.f) * pixel::Scale(3.f, 1.f, 1.f),
+                                                    2.f);
+    auto mirror1 = std::make_shared<const pixel::MirrorMaterial>(mirror_tex);
+    auto p4 = std::make_shared<const pixel::Instance>(s4, mirror1);
+    list.AddPrimitive(p4.get());
 
-//    s = new pixel::Sphere(pixel::SSEVector(0.f, 2.f, 0.f, 1.f), 2.f);
-//    p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.f, 0.9f, 0.f)), pixel::SSEMatrix());
-//    //list.AddPrimitive(p);
-//
-//    s = new pixel::Sphere(pixel::SSEVector(-2.f, 6.f, 0.f, 1.f), 2.f);
-//    p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.f, 0.f, 0.9f)), pixel::SSEMatrix());
-//    //list.AddPrimitive(p);
-//
-//    s = new pixel::Sphere(pixel::SSEVector(2.f, 6.f, 0.f, 1.f), 2.f);
-//    p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.9f, 0.9f, 0.f)), pixel::SSEMatrix());
-//    //list.AddPrimitive(p);
+    auto r = std::make_shared<const pixel::Rectangle>(pixel::SSEMatrix(), 20.f, 20.f);
+    auto m3 = std::make_shared<const pixel::MatteMaterial>(checkboard_tex, sigma_tex);
+    auto p5 = std::make_shared<const pixel::Instance>(r, m3);
+    list.AddPrimitive(p5.get());
 
-    s = new pixel::Rectangle(pixel::SSEMatrix(), 20.f, 20.f);
-    p = new pixel::Instance(s, new pixel::MatteMaterial(pixel::SSESpectrum(0.1f, 0.9f, 0.9f)));
-    //p = new pixel::Instance(s, new pixel::MirrorMaterial(pixel::SSESpectrum(0.9f)));
-    list.AddPrimitive(p);
-
-
-    s = new pixel::Rectangle(pixel::Translate(0.f, 10.f, 0.f) * pixel::RotateX(180.f), 5.f, 5.f);
-    pixel::AreaLight *area_light_r = new pixel::AreaLight(s, new pixel::EmittingMaterial(pixel::SSESpectrum(10.f)));
-    //list.AddPrimitive(area_light_r);
-
-    s = new pixel::Sphere(pixel::Translate(0.f, 10.f, 0.f), 2.5f);
-    pixel::AreaLight *area_light_s = new pixel::AreaLight(s, new pixel::EmittingMaterial(pixel::SSESpectrum(10.f)));
-    list.AddPrimitive(area_light_s);
+    auto sphere_light = std::make_shared<const pixel::Sphere>(pixel::Translate(0.f, 15.f, 0.f), 2.5f);
+    auto emitting_mat = std::make_shared<const pixel::EmittingMaterial>(emission_tex);
+    auto area_light = std::make_shared<const pixel::AreaLight>(sphere_light, emitting_mat);
+    list.AddPrimitive(area_light.get());
 
     // Create scene
     pixel::Scene scene(&list);
 
     // Add light
-    //scene.AddLight(new pixel::PointLight(pixel::SSEVector(0.f, 5.f, 8.f, 1.f), pixel::SSESpectrum(100.f)));
-    //scene.AddLight(new pixel::PointLight(pixel::SSEVector(0.f, 5.f, -8.f, 1.f), pixel::SSESpectrum(100.f)));
-    //scene.AddLight(area_light_r);
-    scene.AddLight(area_light_s);
+    scene.AddLight(area_light.get());
 
     // Create renderer
 //    pixel::RendererInterface *renderer = new pixel::SamplerRenderer(
-//            new pixel::DebugIntegrator(pixel::DebugMode::DEBUB_HIT), 1);
+//            new pixel::DebugIntegrator(pixel::DebugMode::DEBUG_NORMAL), 1);
     pixel::RendererInterface *renderer = new pixel::SamplerRenderer(
-            new pixel::WhittedIntegrator(), 16);
+            new pixel::WhittedIntegrator(), 256);
 //    pixel::RendererInterface *renderer = new pixel::SamplerRenderer(
 //            new pixel::PathTracerIntegrator(), 512
 //    );

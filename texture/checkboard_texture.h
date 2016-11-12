@@ -23,38 +23,46 @@
  */
 
 /*
- * File:   glass_material.h
+ * File:   texture.h
  * Author: simon
  *
- * Created on November 8, 2016, 10:50 PM
+ * Created on November 12, 2016, 05:29 PM
  */
 
-#ifndef PIXEL_GLASS_MATERIAL_H
-#define PIXEL_GLASS_MATERIAL_H
+#ifndef PIXEL_CHECKBOARD_TEXTURE_H
+#define PIXEL_CHECKBOARD_TEXTURE_H
 
 #include "pixel.h"
-#include "material.h"
-#include "texture.h"
 
 namespace pixel {
 
-    class GlassMaterial : public MaterialInterface {
+    // Define constant texture
+    template<typename T>
+    class CheckboardTexture : public TextureInterface<T> {
     public:
-        GlassMaterial(const std::shared_ptr<const TextureInterface<SSESpectrum>> &R,
-                      const std::shared_ptr<const TextureInterface<SSESpectrum>> &T,
-                      const std::shared_ptr<const TextureInterface<float>> &i);
+        CheckboardTexture(const std::shared_ptr<const TextureMapping2DInterface> mapping,
+                          const std::shared_ptr<const TextureInterface<SSESpectrum>> &t1,
+                          const std::shared_ptr<const TextureInterface<SSESpectrum>> &t2)
+                : mapping(mapping), tex1(t1), tex2(t2) {}
 
-        std::unique_ptr<BSDF> GetBSDF(const SurfaceInteraction &interaction) const override;
+        T Evaluate(const SurfaceInteraction &interaction) const override {
+            // Map new uv coordinates
+            float u, v;
+            mapping->Map(interaction, &u, &v);
+            if ((static_cast<uint32_t>(std::floor(u)) + static_cast<uint32_t>(std::floor(v))) % 2
+                == 0) {
+                return tex1->Evaluate(interaction);
+            }
+            return tex2->Evaluate(interaction);
+        }
 
     private:
-        // Reflection
-        const std::shared_ptr<const TextureInterface<SSESpectrum>> R;
-        // Transmission
-        const std::shared_ptr<const TextureInterface<SSESpectrum>> T;
-        // Refraction index
-        const std::shared_ptr<const TextureInterface<float>> r_index;
+        // Mapping
+        const std::shared_ptr<const TextureMapping2DInterface> mapping;
+        // Colors
+        const std::shared_ptr<const TextureInterface<SSESpectrum>> tex1, tex2;
     };
 
 }
 
-#endif //PIXEL_GLASS_MATERIAL_H
+#endif //PIXEL_CHECKBOARD_TEXTURE_H

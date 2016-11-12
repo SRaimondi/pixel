@@ -57,7 +57,7 @@ namespace pixel {
     }
 
     SSESpectrum BoxFilterFilm::GetSpectrum(uint32_t i, uint32_t j) const {
-        return (raster[j * width + i] / static_cast<float> (num_samples[j * width + i]));
+        return SSESpectrum(raster[j * width + i] / static_cast<float> (num_samples[j * width + i]));
     }
 
 

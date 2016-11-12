@@ -22,39 +22,56 @@
  * THE SOFTWARE.
  */
 
-/* 
- * File:   primitive.h
+/*
+ * File:   texture.h
  * Author: simon
  *
- * Created on October 31, 2016, 4:55 PM
+ * Created on November 12, 2016, 04:36 PM
  */
 
-#ifndef PRIMITIVE_H
-#define PRIMITIVE_H
+#ifndef CORE_TEXTURE_H_
+#define CORE_TEXTURE_H_
 
 #include "pixel.h"
 
 namespace pixel {
 
-    // Define primitive interface
-    class PrimitiveInterface {
+    // Define TextureInterface base class
+    template<typename T>
+    class TextureInterface {
     public:
         // Destructor
-        virtual ~PrimitiveInterface() = default;
+        virtual ~TextureInterface() {}
 
-        // Check if a ray interacts with the primitive and possibly fill a
-        // surface_interaction class
-        virtual bool Intersect(const Ray &ray, SurfaceInteraction *const interaction) const = 0;
+        // Evaluate texture at given SurfaceInteraction
+        virtual T Evaluate(const SurfaceInteraction &interaction) const = 0;
+    };
 
-        // Check if a ray interacts with the primitive
-        virtual bool IntersectP(const Ray &ray) const = 0;
+    // Texture mapping base class
+    class TextureMapping2DInterface {
+    public:
+        // Destructor
+        virtual ~TextureMapping2DInterface() {}
 
-        // Create primitive BBOX
-        virtual BBox PrimitiveBounding() const = 0;
+        // Map UV coordinates
+        virtual void Map(const SurfaceInteraction &interaction, float *u, float *v) const = 0;
+    };
 
+    // Uv texture mapping
+    class UVMapping2D : public TextureMapping2DInterface {
+    public:
+        UVMapping2D(float su, float sv, float du, float dv);
+
+        void Map(const SurfaceInteraction &interaction, float *u, float *v) const override;
+
+    private:
+        // Scaling
+        const float su, sv;
+        // Offset
+        const float du, dv;
     };
 
 }
 
-#endif /* PRIMITIVE_H */
 
+#endif /* CORE_TEXTURE_H_ */

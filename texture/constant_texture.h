@@ -22,31 +22,35 @@
  * THE SOFTWARE.
  */
 
-#include "glass_material.h"
-#include "scattering.h"
+/*
+ * File:   texture.h
+ * Author: simon
+ *
+ * Created on November 12, 2016, 04:43 PM
+ */
+
+
+#ifndef PIXEL_CONSTANTE_TEXTURE_H
+#define PIXEL_CONSTANTE_TEXTURE_H
+
+#include "pixel.h"
 
 namespace pixel {
 
-    GlassMaterial::GlassMaterial(const std::shared_ptr<const TextureInterface<SSESpectrum>> &R,
-                                 const std::shared_ptr<const TextureInterface<SSESpectrum>> &T,
-                                 const std::shared_ptr<const TextureInterface<float>> &i)
-            : MaterialInterface(MAT_SCATTERING), R(R), T(T), r_index(i) {
-    }
+    // Define constant texture
+    template<typename T>
+    class ConstantTexture : public TextureInterface<T> {
+    public:
+        ConstantTexture(const T &v) : value(v) {}
 
-    std::unique_ptr<BSDF> GlassMaterial::GetBSDF(const SurfaceInteraction &interaction) const {
-        // Allocate BSDF
-        auto bsdf = std::make_unique<BSDF>(interaction);
-        // Evaluate textures
-        const SSESpectrum ref = R->Evaluate(interaction);
-        const SSESpectrum trans = T->Evaluate(interaction);
-        const float r_i = r_index->Evaluate(interaction);
-        // Add simple Fresnel specular BRDF
-        if (!IsBlack(ref) && !IsBlack(trans)) {
-            bsdf->AddBRDF(new SpecularReflection(ref, new FresnelDielectric(1.f, r_i)));
-            bsdf->AddBRDF(new SpecularTransmission(trans, 1.f, r_i));
+        T Evaluate(const SurfaceInteraction &) const override {
+            return value;
         }
 
-        return bsdf;
-    }
+    private:
+        const T value;
+    };
 
 }
+
+#endif //PIXEL_CONSTANTE_TEXTURE_H

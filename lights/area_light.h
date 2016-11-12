@@ -44,8 +44,8 @@ namespace pixel {
     class AreaLight : public LightInterface, public PrimitiveInterface {
     public:
         // Constructor
-        AreaLight(const ShapeInterface *const s,
-                  const MaterialInterface *const m);
+        AreaLight(const std::shared_ptr<const ShapeInterface> &s,
+                  const std::shared_ptr<const MaterialInterface> &m);
 
         SSESpectrum Sample_Li(const SurfaceInteraction &from, float u1, float u2,
                               SSEVector *const wi, float *const pdf, OcclusionTester *const occ) const override;
@@ -60,9 +60,11 @@ namespace pixel {
 
     private:
         // Transformed Shape representing the light
-        const ShapeInterface *shape;
+        std::shared_ptr<const ShapeInterface> shape;
+        // const ShapeInterface *shape;
         // Light material
-        const MaterialInterface *material;
+        std::shared_ptr<const MaterialInterface> material;
+        // const MaterialInterface *material;
     };
 
 }

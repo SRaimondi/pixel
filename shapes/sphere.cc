@@ -77,9 +77,14 @@ namespace pixel {
             phi += TWO_PI;
         }
         float theta = std::acos((interaction->hit_point.y) / radius);
-        interaction->s = SSEVector(std::sin(phi), 0.f, -std::cos(phi), 0.f);
-        interaction->t = SSEVector(std::cos(theta) * std::cos(phi), -std::sin(theta), std::cos(theta) * std::sin(phi),
-                                   0.f);
+        if (theta > 0.f) {
+            interaction->s = SSEVector(std::sin(phi), 0.f, -std::cos(phi), 0.f);
+            interaction->t = SSEVector(std::cos(theta) * std::cos(phi), -std::sin(theta),
+                                       std::cos(theta) * std::sin(phi),
+                                       0.f);
+        } else {
+            CoordinateSystem(interaction->normal, &(interaction->s), &(interaction->t));
+        }
         interaction->u = phi / TWO_PI;
         interaction->v = theta / PI;
 
@@ -169,7 +174,7 @@ namespace pixel {
         return interaction;
     }
 
-    float Sphere::Pdf(const SurfaceInteraction &from, const SSEVector &wi) const {
+    float Sphere::Pdf(const SurfaceInteraction &from, const SSEVector &) const {
         // Compute center in world space
         SSEVector sphere_center = local_to_world * SSEVector(0.f, 0.f, 0.f, 1.f);
         float sin_theta_max_2 = radius * radius / SqrdLength(from.hit_point - sphere_center);

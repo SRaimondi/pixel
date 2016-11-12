@@ -39,7 +39,8 @@ namespace pixel {
     std::default_random_engine generator;
     std::uniform_real_distribution<float> distribution(0.f, 1.f);
 
-    SSESpectrum DirectIllumination(const SurfaceInteraction &interaction, const SSEVector &wo_world, const Scene &scene) {
+    SSESpectrum
+    DirectIllumination(const SurfaceInteraction &interaction, const SSEVector &wo_world, const Scene &scene) {
         SSESpectrum Ld(0.f);
 
         // Type of BRDF to check for direct illumination

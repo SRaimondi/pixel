@@ -99,7 +99,7 @@ namespace pixel {
         if (wo_local.y == 0.f) {
             return SSESpectrum();
         }
-        SSESpectrum f(0.f);
+        SSESpectrum f;
         for (auto brdf : brdfs) {
             if (brdf->MatchesTypes(types) &&
                 ((SameHemisphere(wi_local, wo_local) && (brdf->type & BRDF_REFLECTION)) ||
@@ -241,8 +241,8 @@ namespace pixel {
             : BRDF(BRDF_TYPE(BRDF_REFLECTION | BRDF_DIFFUSE)), rho(r) {
     }
 
-    SSESpectrum LambertianReflection::f(const SSEVector &wo, const SSEVector &wi) const {
-        return (rho * ONE_OVER_PI);
+    SSESpectrum LambertianReflection::f(const SSEVector &, const SSEVector &) const {
+        return SSESpectrum(rho * ONE_OVER_PI);
     }
 
     SpecularReflection::SpecularReflection(const SSESpectrum &R, FresnelInterface *const f)
@@ -265,7 +265,7 @@ namespace pixel {
         *pdf = 1.f;
 
         // Note that there is not division by cosine term!
-        return fresnel->Evaluate(CosTheta(*wi)) * R;
+        return SSESpectrum(fresnel->Evaluate(CosTheta(*wi)) * R);
     }
 
     float SpecularReflection::Pdf(const SSEVector &, const SSEVector &) const {
@@ -298,7 +298,8 @@ namespace pixel {
         }
         *pdf = 1.f;
 
-        return ((eta_i * eta_i) / (eta_t * eta_t) * T * (SSESpectrum(1.f) - fresnel.Evaluate(CosTheta(*wi))));
+        return SSESpectrum(
+                (eta_i * eta_i) / (eta_t * eta_t) * T * (SSESpectrum(1.f) - fresnel.Evaluate(CosTheta(*wi))));
     }
 
     float SpecularTransmission::Pdf(const SSEVector &, const SSEVector &) const {

@@ -56,7 +56,7 @@ namespace pixel {
                 : r(v), g(v), b(v), w(0.f) {
         }
 
-        SSESpectrum(const __m128 &xmm)
+        explicit SSESpectrum(const __m128 &xmm)
                 : xmm(xmm) {
         }
 
@@ -153,6 +153,10 @@ namespace pixel {
 
     inline __m128 operator/(const __m128 &xmm, const SSESpectrum &s) {
         return _mm_div_ps(xmm, s.xmm);
+    }
+
+    inline __m128 operator/(const SSESpectrum &s, const __m128 &xmm) {
+        return _mm_div_ps(s.xmm, xmm);
     }
 
     // Spectrum scaling

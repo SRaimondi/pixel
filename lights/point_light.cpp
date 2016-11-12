@@ -39,7 +39,7 @@ namespace pixel {
         *pdf = 1.f;
         *occ = OcclusionTester(from.hit_point, position);
 
-        return (intensity / SSESqrdLength(position - from.hit_point));
+        return SSESpectrum(intensity / SSESqrdLength(position - from.hit_point));
     }
 
     float PointLight::Pdf_Li(const SurfaceInteraction &, const SSEVector &) const {

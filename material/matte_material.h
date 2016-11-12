@@ -41,13 +41,15 @@ namespace pixel {
     class MatteMaterial : public MaterialInterface {
     public:
         // Constructor
-        MatteMaterial(const SSESpectrum &rho);
+        MatteMaterial(const std::shared_ptr<const TextureInterface<SSESpectrum>> &Kd,
+                      const std::shared_ptr<const TextureInterface<float>> &s);
 
         std::unique_ptr<BSDF> GetBSDF(const SurfaceInteraction &interaction) const override;
 
     private:
-        // For the moment, simple color, no texture
-        const SSESpectrum rho;
+        // Material diffuse color
+        const std::shared_ptr<const TextureInterface<SSESpectrum>> Kd;
+        const std::shared_ptr<const TextureInterface<float>> sigma;
     };
 
 }

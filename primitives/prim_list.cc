@@ -31,8 +31,9 @@ namespace pixel {
             : primitives() {
     }
 
-    void PrimitiveList::AddPrimitive(const PrimitiveInterface *p) {
+    void PrimitiveList::AddPrimitive(const PrimitiveInterface *const p) {
         primitives.push_back(p);
+        // primitives.push_back(std::make_shared<const PrimitiveInterface>(p));
     }
 
     bool PrimitiveList::Intersect(const Ray &ray, SurfaceInteraction *const interaction) const {

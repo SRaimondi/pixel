@@ -23,19 +23,20 @@
  */
 
 #include "matte_material.h"
-#include "scattering.h"
+#include "texture.h"
 
 namespace pixel {
 
-    MatteMaterial::MatteMaterial(const SSESpectrum &rho)
-            : MaterialInterface(MAT_SCATTERING), rho(rho) {
+    MatteMaterial::MatteMaterial(const std::shared_ptr<const TextureInterface<SSESpectrum>> &Kd,
+                                 const std::shared_ptr<const TextureInterface<float>> &s)
+            : MaterialInterface(MAT_SCATTERING), Kd(Kd), sigma(s) {
     }
 
     std::unique_ptr<BSDF> MatteMaterial::GetBSDF(const SurfaceInteraction &interaction) const {
         // Allocate BSDF
-        //BSDF *bsdf = new BSDF(interaction);
         auto bsdf = std::make_unique<BSDF>(interaction);
-
+        // Evaluate texture
+        const SSESpectrum rho = Kd->Evaluate(interaction);
         if (!IsBlack(rho)) {
             bsdf->AddBRDF(new LambertianReflection(rho));
         }

@@ -57,9 +57,10 @@ namespace pixel {
         float pdf;
         BRDF_TYPE brdf_type;
         bool specular_hit = false;
+        SurfaceInteraction interaction;
         for (uint32_t bounce = 0; bounce < max_depth; bounce++) {
-            SurfaceInteraction interaction;
             if (!scene.Intersect(current_ray, &interaction)) { break; }
+            interaction.GenerateBSDF();
             // Compute wo
             wo_world = Normalize(-current_ray.Direction());
             // Check for emission

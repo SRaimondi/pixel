@@ -39,6 +39,9 @@ namespace pixel {
     // Define base integrator class
     class IntegratorInterface {
     public:
+        // Destructor
+        virtual ~IntegratorInterface() {}
+
         // Preprocess
         virtual void Preprocess() const = 0;
     };

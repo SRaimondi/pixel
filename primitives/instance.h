@@ -42,8 +42,8 @@ namespace pixel {
     class Instance : public PrimitiveInterface {
     public:
         // Constructor
-        Instance(const ShapeInterface *const s,
-                 const MaterialInterface *const m);
+        Instance(const std::shared_ptr<const ShapeInterface> &s,
+                 const std::shared_ptr<const MaterialInterface> &m);
 
         bool Intersect(const Ray &ray, SurfaceInteraction *const interaction) const override;
 
@@ -53,9 +53,11 @@ namespace pixel {
 
     private:
         // Transformed Shape
-        const ShapeInterface *shape;
+        std::shared_ptr<const ShapeInterface> shape;
+        // const ShapeInterface *shape;
         // Material
-        const MaterialInterface *material;
+        std::shared_ptr<const MaterialInterface> material;
+        // const MaterialInterface *material;
     };
 
 }

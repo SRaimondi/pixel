@@ -22,31 +22,18 @@
  * THE SOFTWARE.
  */
 
-#include "glass_material.h"
-#include "scattering.h"
+#include "texture.h"
+#include "interaction.h"
 
 namespace pixel {
 
-    GlassMaterial::GlassMaterial(const std::shared_ptr<const TextureInterface<SSESpectrum>> &R,
-                                 const std::shared_ptr<const TextureInterface<SSESpectrum>> &T,
-                                 const std::shared_ptr<const TextureInterface<float>> &i)
-            : MaterialInterface(MAT_SCATTERING), R(R), T(T), r_index(i) {
+    UVMapping2D::UVMapping2D(float su, float sv, float du, float dv)
+            : su(su), sv(sv), du(du), dv(dv) {
     }
 
-    std::unique_ptr<BSDF> GlassMaterial::GetBSDF(const SurfaceInteraction &interaction) const {
-        // Allocate BSDF
-        auto bsdf = std::make_unique<BSDF>(interaction);
-        // Evaluate textures
-        const SSESpectrum ref = R->Evaluate(interaction);
-        const SSESpectrum trans = T->Evaluate(interaction);
-        const float r_i = r_index->Evaluate(interaction);
-        // Add simple Fresnel specular BRDF
-        if (!IsBlack(ref) && !IsBlack(trans)) {
-            bsdf->AddBRDF(new SpecularReflection(ref, new FresnelDielectric(1.f, r_i)));
-            bsdf->AddBRDF(new SpecularTransmission(trans, 1.f, r_i));
-        }
-
-        return bsdf;
+    void UVMapping2D::Map(const SurfaceInteraction &interaction, float *u, float *v) const {
+        *u = interaction.u * su + du;
+        *v = interaction.v * sv + dv;
     }
 
 }

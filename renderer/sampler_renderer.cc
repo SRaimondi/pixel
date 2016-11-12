@@ -47,11 +47,6 @@ namespace pixel {
             for (uint32_t j = 0; j < film->GetHeight(); j++) {
                 // Loop over all samples
                 for (uint32_t s = 0; s < aa_samples; s++) {
-
-                    if (i == 142 && j == 544 && s == 2) {
-                        int f = 0;
-                    }
-
                     // Request ray from camera
                     Ray ray = camera.GenerateRay(i, j, distribution(generator),
                                                  distribution(generator)); // TODO: FIX ME

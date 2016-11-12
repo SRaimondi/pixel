@@ -44,7 +44,7 @@ namespace pixel {
         PrimitiveList();
 
         // Add primitive
-        void AddPrimitive(const PrimitiveInterface *p);
+        void AddPrimitive(const PrimitiveInterface *const p);
 
         bool Intersect(const Ray &ray, SurfaceInteraction *const interaction) const override;
 

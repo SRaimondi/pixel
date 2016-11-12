@@ -23,7 +23,8 @@ include_directories(camera
         renderer
         shapes
         tonemapper
-        lights)
+        lights
+        texture)
 
 set(SOURCE_FILES
         camera/pinhole_camera.cc
@@ -96,6 +97,8 @@ set(SOURCE_FILES
         material/glass_material.h
         material/glass_material.cpp
         integrator/path_tracer_integrator.h
-        integrator/path_tracer_integrator.cpp)
+        integrator/path_tracer_integrator.cpp
+        core/texture.h
+        texture/constant_texture.h texture/checkboard_texture.h core/texture.cpp)
 
 add_executable(pixel ${SOURCE_FILES})

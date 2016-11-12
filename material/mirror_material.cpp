@@ -23,19 +23,19 @@
  */
 
 #include "mirror_material.h"
-#include "scattering.h"
+#include "texture.h"
 
 namespace pixel {
 
-    MirrorMaterial::MirrorMaterial(const SSESpectrum &R)
-            : MaterialInterface(MAT_SCATTERING), R(R) {
+    MirrorMaterial::MirrorMaterial(const std::shared_ptr<const TextureInterface<SSESpectrum>> &Km)
+            : MaterialInterface(MAT_SCATTERING), Km(Km) {
     }
 
     std::unique_ptr<BSDF> MirrorMaterial::GetBSDF(const SurfaceInteraction &interaction) const {
         // Allocate BSDF
-        // BSDF *bsdf = new BSDF(interaction);
         auto bsdf = std::make_unique<BSDF>(interaction);
-
+        // Evaluate texture
+        const SSESpectrum R = Km->Evaluate(interaction);
         if (!IsBlack(R)) {
             bsdf->AddBRDF(new SpecularReflection(R, new FresnelIdeal()));
         }

@@ -46,14 +46,12 @@ namespace pixel {
         // Constructor
         SurfaceInteraction();
 
-//        ~SurfaceInteraction();
-
         SurfaceInteraction(const SSEVector &hit, const SSEVector &n,
                            const SSEVector &s, const SSEVector &t, float u, float v,
                            const PrimitiveInterface *const prim_ptr,
                            const MaterialInterface *const mat_ptr);
 
-        // Compute emission at interaction in given direction
+        // Compute emission at interaction itypen given direction
         SSESpectrum EmittedRadiance(const SSEVector &w) const;
 
         // Spawn ray in given direction
@@ -75,8 +73,7 @@ namespace pixel {
         // Primitive material
         const MaterialInterface *mat_ptr;
         // BSDF
-        std::unique_ptr<BSDF> bsdf;
-        // BSDF *bsdf;
+        std::unique_ptr<const BSDF> bsdf;
     };
 
     // Transform surface_interaction for a given matrix

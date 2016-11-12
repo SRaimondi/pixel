@@ -39,6 +39,9 @@ namespace pixel {
     // Define base camera class
     class CameraInterface {
     public:
+        // Virtual destructor
+        virtual ~CameraInterface() {}
+
         // Create ray for a given couple of pixel coordinates and a sample
         virtual Ray GenerateRay(uint32_t i, uint32_t j, float u1, float u2) const = 0;
     };

@@ -128,6 +128,19 @@ namespace pixel {
 
     class AreaLight;
 
+    template<typename T>
+    class TextureInterface;
+
+    template<typename T>
+    class ConstantTexture;
+
+    template<typename T>
+    class CheckboardTexture;
+
+    class TextureMapping2DInterface;
+
+    class UVMapping2D;
+
     class FresnelInterface;
 
     class FresnelDielectric;

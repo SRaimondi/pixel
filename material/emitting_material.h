@@ -41,15 +41,15 @@ namespace pixel {
     class EmittingMaterial : public MaterialInterface {
     public:
         // Constructor
-        EmittingMaterial(const SSESpectrum &e);
+        EmittingMaterial(const std::shared_ptr<const TextureInterface<SSESpectrum>> &e);
 
         std::unique_ptr<BSDF> GetBSDF(const SurfaceInteraction &interaction) const override;
 
         SSESpectrum Emission(const SurfaceInteraction &interaction, const SSEVector &w) const override;
 
     private:
-        // For the moment, simple color, no texture
-        SSESpectrum emission;
+        // Material emission
+        const std::shared_ptr<const TextureInterface<SSESpectrum>> emission;
     };
 
 }

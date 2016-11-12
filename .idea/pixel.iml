@@ -42,6 +42,7 @@
       <sourceFolder url="file://$MODULE_DIR$/core/shape.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/primitive.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/light.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/texture.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/renderer.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/sse_spectrum.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/sse_matrix.h" isTestSource="false" />
@@ -54,7 +55,10 @@
       <sourceFolder url="file://$MODULE_DIR$/core/renderer.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/interaction.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/scene.cc" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/texture.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/interaction.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/texture/constant_texture.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/texture/checkboard_texture.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/renderer/sampler_renderer.cc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/renderer/sampler_renderer.h" isTestSource="false" />
@@ -79,15 +83,15 @@
     <orderEntry type="module-library">
       <library name="Header Search Paths">
         <CLASSES>
-          <root url="file:///usr/include" />
           <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
           <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
+          <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
         </CLASSES>
         <SOURCES>
-          <root url="file:///usr/include" />
           <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
           <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
+          <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
         </SOURCES>
       </library>

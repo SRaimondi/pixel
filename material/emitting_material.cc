@@ -23,17 +23,16 @@
  */
 
 #include "emitting_material.h"
-#include "scattering.h"
+#include "texture.h"
 
 namespace pixel {
 
-    EmittingMaterial::EmittingMaterial(const SSESpectrum &e)
+    EmittingMaterial::EmittingMaterial(const std::shared_ptr<const TextureInterface<SSESpectrum>> &e)
             : MaterialInterface(MAT_EMITTING), emission(e) {
     }
 
     std::unique_ptr<BSDF> EmittingMaterial::GetBSDF(const SurfaceInteraction &interaction) const {
         // Return empty BSDF
-        // BSDF * bsdf = new BSDF(interaction);
         auto bsdf = std::make_unique<BSDF>(interaction);
 
         return bsdf;
@@ -41,8 +40,9 @@ namespace pixel {
 
     SSESpectrum EmittingMaterial::Emission(const SurfaceInteraction &interaction, const SSEVector &w) const {
         float dot = DotProduct(w, interaction.normal);
-        if (dot > 0.f) {
-            return (dot * emission);
+        const SSESpectrum e = emission->Evaluate(interaction);
+        if (dot > 0.f && !IsBlack(e)) {
+            return SSESpectrum(dot * e);
         } else {
             return SSESpectrum(0.f);
         }

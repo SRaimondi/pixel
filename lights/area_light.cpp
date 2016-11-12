@@ -30,8 +30,8 @@
 
 namespace pixel {
 
-    AreaLight::AreaLight(const ShapeInterface *const s,
-                         const MaterialInterface *const m)
+    AreaLight::AreaLight(const std::shared_ptr<const ShapeInterface> &s,
+                         const std::shared_ptr<const MaterialInterface> &m)
             : shape(s), material(m) {
     }
 
@@ -63,7 +63,7 @@ namespace pixel {
             // Update ray maximum value
             ray.SetNewMaximum(t_hit);
             interaction->prim_ptr = this;
-            interaction->mat_ptr = material;
+            interaction->mat_ptr = material.get();
 
             return true;
         }

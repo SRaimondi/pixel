@@ -36,8 +36,7 @@ namespace pixel {
 //    }
 
     SurfaceInteraction::SurfaceInteraction(const SSEVector &hit, const SSEVector &n,
-                                           const SSEVector &s, const SSEVector &t, float u,
-                                           float v,
+                                           const SSEVector &s, const SSEVector &t, float u, float v,
                                            const PrimitiveInterface *prim_ptr,
                                            const MaterialInterface *const mat_ptr)
             : hit_point(hit), normal(n), s(s), t(t), u(u), v(v),
