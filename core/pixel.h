@@ -137,6 +137,9 @@ namespace pixel {
     template<typename T>
     class CheckboardTexture;
 
+    template<typename T>
+    class GridTexture;
+
     class TextureMapping2DInterface;
 
     class UVMapping2D;

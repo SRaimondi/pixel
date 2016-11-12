@@ -59,11 +59,12 @@
 #include "area_light.h"
 #include "constant_texture.h"
 #include "checkboard_texture.h"
+#include "grid_texture.h"
 
 int main(int argc, char **argv) {
 
     // Create film
-    pixel::Film *f = new pixel::BoxFilterFilm(512, 512);
+    pixel::Film *f = new pixel::BoxFilterFilm(1024, 1024);
 
     // Create camera
     pixel::CameraInterface *camera = new pixel::PinholeCamera(
@@ -74,6 +75,10 @@ int main(int argc, char **argv) {
     pixel::PrimitiveList list;
 
     // Create textures
+    auto white_tex = std::make_shared<const pixel::ConstantTexture<pixel::SSESpectrum>>(
+            pixel::SSESpectrum(0.9f));
+    auto black_tex = std::make_shared<const pixel::ConstantTexture<pixel::SSESpectrum>>(
+            pixel::SSESpectrum(0.05f));
     auto red_tex = std::make_shared<const pixel::ConstantTexture<pixel::SSESpectrum>>(
             pixel::SSESpectrum(0.9f, 0.f, 0.f));
     auto green_tex = std::make_shared<const pixel::ConstantTexture<pixel::SSESpectrum>>(
@@ -85,12 +90,14 @@ int main(int argc, char **argv) {
     auto sigma_tex = std::make_shared<const pixel::ConstantTexture<float>>(0.f);
     auto ref_tex = std::make_shared<const pixel::ConstantTexture<float>>(1.3f);
     auto mirror_tex = std::make_shared<const pixel::ConstantTexture<pixel::SSESpectrum>>(pixel::SSESpectrum(0.9f));
-    auto emission_tex = std::make_shared<const pixel::ConstantTexture<pixel::SSESpectrum>>(pixel::SSESpectrum(20.f));
+    auto emission_tex = std::make_shared<const pixel::ConstantTexture<pixel::SSESpectrum>>(pixel::SSESpectrum(10.f));
 
     // Create texture mapping
-    auto uv_map = std::make_shared<const pixel::UVMapping2D>(10.f, 10.f, 0.f, 0.f);
-    auto checkboard_tex = std::make_shared<const pixel::CheckboardTexture<pixel::SSESpectrum>>(uv_map, green2_tex,
-                                                                                               violet_tex);
+    auto uv_map = std::make_shared<const pixel::UVMapping2D>(6.f, 6.f, 0.f, 0.f);
+    auto checkboard_tex = std::make_shared<const pixel::CheckboardTexture<pixel::SSESpectrum>>(uv_map, emission_tex,
+                                                                                               black_tex);
+    auto grid_tex = std::make_shared<const pixel::GridTexture<pixel::SSESpectrum>>(uv_map, green2_tex, violet_tex,
+                                                                                   0.07f);
 
     // Create shapes
     auto s1 = std::make_shared<const pixel::Sphere>(pixel::Translate(-4.f, 2.f, 0.f), 2.f);
@@ -115,11 +122,12 @@ int main(int argc, char **argv) {
     list.AddPrimitive(p4.get());
 
     auto r = std::make_shared<const pixel::Rectangle>(pixel::SSEMatrix(), 20.f, 20.f);
-    auto m3 = std::make_shared<const pixel::MatteMaterial>(checkboard_tex, sigma_tex);
+    auto m3 = std::make_shared<const pixel::MatteMaterial>(grid_tex, sigma_tex);
     auto p5 = std::make_shared<const pixel::Instance>(r, m3);
     list.AddPrimitive(p5.get());
 
-    auto sphere_light = std::make_shared<const pixel::Sphere>(pixel::Translate(0.f, 15.f, 0.f), 2.5f);
+    auto sphere_light = std::make_shared<const pixel::Sphere>(pixel::Translate(0.f, 10.f, 0.f), 2.5f);
+    auto rectangle_light = std::make_shared<const pixel::Rectangle>(pixel::Translate(0.f, 10.f, 0.f) * pixel::RotateX(180.f), 10.f, 10.f);
     auto emitting_mat = std::make_shared<const pixel::EmittingMaterial>(emission_tex);
     auto area_light = std::make_shared<const pixel::AreaLight>(sphere_light, emitting_mat);
     list.AddPrimitive(area_light.get());
@@ -134,7 +142,7 @@ int main(int argc, char **argv) {
 //    pixel::RendererInterface *renderer = new pixel::SamplerRenderer(
 //            new pixel::DebugIntegrator(pixel::DebugMode::DEBUG_NORMAL), 1);
     pixel::RendererInterface *renderer = new pixel::SamplerRenderer(
-            new pixel::WhittedIntegrator(), 256);
+            new pixel::WhittedIntegrator(), 64);
 //    pixel::RendererInterface *renderer = new pixel::SamplerRenderer(
 //            new pixel::PathTracerIntegrator(), 512
 //    );

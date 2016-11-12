@@ -73,5 +73,4 @@ namespace pixel {
 
 }
 
-
 #endif /* CORE_TEXTURE_H_ */

@@ -138,6 +138,13 @@ namespace pixel {
         SurfaceInteraction interaction;
         // Sample point on sphere
         SSEVector p_sphere = radius * UniformSampleSphere(u1, u2);
+        float phi = std::atan2(p_sphere.z, p_sphere.x);
+        if (phi < 0.f) {
+            phi += TWO_PI;
+        }
+        float theta = std::acos((interaction.hit_point.y) / radius);
+        interaction.u = phi / TWO_PI;
+        interaction.v = theta / PI;
         interaction.hit_point = local_to_world * SSEVector(p_sphere.x, p_sphere.y, p_sphere.z, 1.f);
         interaction.normal = Normalize(Transpose(world_to_local) * p_sphere);
 
@@ -168,6 +175,13 @@ namespace pixel {
         SurfaceInteraction interaction;
         interaction.normal = SphericalDirection(sin_alpha, cos_alpha, phi, -u_c, -v_c, -w_c);
         interaction.hit_point = SSEVector(0.f, 0.f, 0.f, 1.f) + radius * interaction.normal;
+        float sphere_phi = std::atan2(interaction.hit_point.z, interaction.hit_point.x);
+        if (sphere_phi < 0.f) {
+            sphere_phi += TWO_PI;
+        }
+        float theta = std::acos((interaction.hit_point.y) / radius);
+        interaction.u = sphere_phi / TWO_PI;
+        interaction.v = theta / PI;
 
         TransformSurfaceInteraction(&interaction, local_to_world);
 

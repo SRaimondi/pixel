@@ -23,15 +23,15 @@
  */
 
 /*
- * File:   texture.h
+ * File:   constant_texture.h
  * Author: simon
  *
  * Created on November 12, 2016, 04:43 PM
  */
 
 
-#ifndef PIXEL_CONSTANTE_TEXTURE_H
-#define PIXEL_CONSTANTE_TEXTURE_H
+#ifndef PIXEL_CONSTANT_TEXTURE_H
+#define PIXEL_CONSTANT_TEXTURE_H
 
 #include "pixel.h"
 
@@ -53,4 +53,4 @@ namespace pixel {
 
 }
 
-#endif //PIXEL_CONSTANTE_TEXTURE_H
+#endif //PIXEL_CONSTANT_TEXTURE_H

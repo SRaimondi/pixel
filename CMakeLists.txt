@@ -99,6 +99,9 @@ set(SOURCE_FILES
         integrator/path_tracer_integrator.h
         integrator/path_tracer_integrator.cpp
         core/texture.h
-        texture/constant_texture.h texture/checkboard_texture.h core/texture.cpp)
+        texture/constant_texture.h
+        texture/checkboard_texture.h
+        # texture/grid_texture.h
+        core/texture.cpp)
 
 add_executable(pixel ${SOURCE_FILES})

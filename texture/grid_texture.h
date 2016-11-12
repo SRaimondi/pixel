@@ -23,35 +23,35 @@
  */
 
 /*
- * File:   texture.h
+ * File:   grid_texture.h
  * Author: simon
  *
- * Created on November 12, 2016, 05:29 PM
+ * Created on November 12, 2016, 06:09 PM
  */
 
-#ifndef PIXEL_CHECKBOARD_TEXTURE_H
-#define PIXEL_CHECKBOARD_TEXTURE_H
+#ifndef PIXEL_GRID_TEXTURE_H
+#define PIXEL_GRID_TEXTURE_H
 
 #include "pixel.h"
 #include "texture.h"
 
 namespace pixel {
 
-    // Define checkboard texture
+    // Define constant texture
     template<typename T>
-    class CheckboardTexture : public TextureInterface<T> {
+    class GridTexture : public TextureInterface<T> {
     public:
-        CheckboardTexture(const std::shared_ptr<const TextureMapping2DInterface> mapping,
-                          const std::shared_ptr<const TextureInterface<SSESpectrum>> &t1,
-                          const std::shared_ptr<const TextureInterface<SSESpectrum>> &t2)
-                : mapping(mapping), tex1(t1), tex2(t2) {}
+        GridTexture(const std::shared_ptr<const TextureMapping2DInterface> mapping,
+                    const std::shared_ptr<const TextureInterface<SSESpectrum>> &t1,
+                    const std::shared_ptr<const TextureInterface<SSESpectrum>> &t2,
+                    float thickness)
+                : mapping(mapping), tex1(t1), tex2(t2), thickness(thickness) {}
 
         T Evaluate(const SurfaceInteraction &interaction) const override {
             // Map new uv coordinates
             float u, v;
             mapping->Map(interaction, &u, &v);
-            if ((static_cast<uint32_t>(std::floor(u)) + static_cast<uint32_t>(std::floor(v))) % 2
-                == 0) {
+            if (std::abs(u - std::round(u)) < thickness || std::abs(v - std::round(v)) < thickness) {
                 return tex1->Evaluate(interaction);
             }
             return tex2->Evaluate(interaction);
@@ -62,8 +62,10 @@ namespace pixel {
         const std::shared_ptr<const TextureMapping2DInterface> mapping;
         // Colors
         const std::shared_ptr<const TextureInterface<SSESpectrum>> tex1, tex2;
+        // Thickness
+        const float thickness;
     };
 
 }
 
-#endif //PIXEL_CHECKBOARD_TEXTURE_H
+#endif //PIXEL_GRID_TEXTURE_H
