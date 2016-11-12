@@ -306,6 +306,38 @@ namespace pixel {
         return 0.f;
     }
 
+    OrenNayar::OrenNayar(const SSESpectrum &r, float sigma)
+    : BRDF(BRDF_TYPE(BRDF_REFLECTION | BRDF_DIFFUSE)), rho(r) {
+        sigma = DegToRad(sigma);
+        float sigma_2 = sigma * sigma;
+        A = 1.f - (sigma_2 / (2.f * (sigma_2 + 0.33f)));
+        B = 0.45f * sigma_2 / (sigma_2 + 0.09f);
+    }
+
+    SSESpectrum OrenNayar::f(const SSEVector &wo, const SSEVector &wi) const {
+        float sin_theta_i = SinTheta(wi);
+        float sin_theta_o = SinTheta(wo);
+        float max_cos = 0.f;
+        if (sin_theta_i > EPS && sin_theta_o > EPS) {
+            float sin_phi_i =SinPhi(wi), cos_phi_i = CosPhi(wi);
+            float sin_phi_o =SinPhi(wo), cos_phi_o = CosPhi(wo);
+            float d_cos = cos_phi_i * cos_phi_o + sin_phi_i * sin_phi_o;
+            max_cos = FMax(0.f, d_cos);
+        }
+
+        // Compute sine and tangent terms or Oren Nayar
+        float sin_alpha, tan_beta;
+        if (AbsCosTheta(wi) > AbsCosTheta(wo)) {
+            sin_alpha = sin_theta_o;
+            tan_beta = sin_theta_i / AbsCosTheta(wi);
+        } else {
+            sin_alpha = sin_theta_i;
+            tan_beta = sin_theta_o / AbsCosTheta(wo);
+        }
+
+        return SSESpectrum(rho * ONE_OVER_PI * (A + B * max_cos * sin_alpha * tan_beta));
+    }
+
 //    FresnelSpecular::FresnelSpecular(const SSESpectrum &R, const SSESpectrum &T, float eta_a, float eta_b)
 //            : BRDF(BRDF_TYPE(BRDF_REFLECTION | BRDF_TRANSMISSION | BRDF_SPECULAR)),
 //              R(R), T(T),

@@ -41,7 +41,7 @@ namespace pixel {
     class SamplerRenderer : public RendererInterface {
     public:
         // Constructor
-        SamplerRenderer(SurfaceIntegratorInterface *const integrator, uint32_t aa_samples);
+        SamplerRenderer(const std::shared_ptr<const SurfaceIntegratorInterface> &i, uint32_t aa_samples);
 
         // Render scene given a film, a scene and a camera
         void RenderImage(Film *const film, const Scene &scene, const CameraInterface &camera) const override;

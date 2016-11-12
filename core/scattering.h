@@ -136,10 +136,10 @@ namespace pixel {
     // Define different type of BRDF
     enum BRDF_TYPE {
         // One of these two
-                BRDF_REFLECTION = 1 << 0,
+        BRDF_REFLECTION = 1 << 0,
         BRDF_TRANSMISSION = 1 << 1,
         // Plus one of this
-                BRDF_DIFFUSE = 1 << 2,
+        BRDF_DIFFUSE = 1 << 2,
         BRDF_GLOSSY = 1 << 3,
         BRDF_SPECULAR = 1 << 4,
         ALL_BRDF = BRDF_REFLECTION | BRDF_TRANSMISSION | BRDF_DIFFUSE | BRDF_GLOSSY | BRDF_SPECULAR
@@ -298,6 +298,19 @@ namespace pixel {
 //        const float eta_a, eta_b;
 //        const FresnelDielectric fresnel;
 //    };
+
+    // Define Oren-Nayar class
+    class OrenNayar : public BRDF {
+    public:
+        // Constructor
+        OrenNayar(const SSESpectrum &r, float sigma);
+
+        SSESpectrum f(const SSEVector &wo, const SSEVector &wi) const override;
+
+    private:
+        const SSESpectrum rho;
+        float A, B;
+    };
 }
 
 #endif /* SCATTERING_H */

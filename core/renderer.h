@@ -41,14 +41,14 @@ namespace pixel {
     class RendererInterface {
     public:
         // Constructor
-        RendererInterface(SurfaceIntegratorInterface *const integrator);
+        RendererInterface(const std::shared_ptr<const SurfaceIntegratorInterface> &i);
 
         // Render scene given a film, a scene and a camera
         virtual void RenderImage(Film *const film, const Scene &scene, const CameraInterface &camera) const = 0;
 
     protected:
         // Surface integrator
-        SurfaceIntegratorInterface *const integrator;
+        const std::shared_ptr<const SurfaceIntegratorInterface> integrator;
     };
 
 }

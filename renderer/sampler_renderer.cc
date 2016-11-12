@@ -33,8 +33,8 @@
 
 namespace pixel {
 
-    SamplerRenderer::SamplerRenderer(SurfaceIntegratorInterface *const integrator, uint32_t aa_samples)
-            : RendererInterface(integrator), aa_samples(aa_samples) {
+    SamplerRenderer::SamplerRenderer(const std::shared_ptr<const SurfaceIntegratorInterface> &i, uint32_t aa_samples)
+            : RendererInterface(i), aa_samples(aa_samples) {
     }
 
     void SamplerRenderer::RenderImage(Film *const film, const Scene &scene, const CameraInterface &camera) const {

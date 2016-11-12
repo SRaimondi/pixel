@@ -26,8 +26,8 @@
 
 namespace pixel {
 
-    RendererInterface::RendererInterface(SurfaceIntegratorInterface *const integrator)
-            : integrator(integrator) {
+    RendererInterface::RendererInterface(const std::shared_ptr<const SurfaceIntegratorInterface> &i)
+            : integrator(i) {
     }
 
 }

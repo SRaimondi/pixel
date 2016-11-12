@@ -77,7 +77,7 @@ namespace pixel {
             phi += TWO_PI;
         }
         float theta = std::acos((interaction->hit_point.y) / radius);
-        if (theta > 0.f) {
+        if (theta > EPS) {
             interaction->s = SSEVector(std::sin(phi), 0.f, -std::cos(phi), 0.f);
             interaction->t = SSEVector(std::cos(theta) * std::cos(phi), -std::sin(theta),
                                        std::cos(theta) * std::sin(phi),
@@ -198,7 +198,7 @@ namespace pixel {
     }
 
     BBox Sphere::ShapeBounding() const {
-        SSEVector radius_vector = SSEVector(radius, radius, radius, 0.f);
+        SSEVector radius_vector = SSEVector(radius, radius, radius, 1.f);
 
         return BBox(-radius_vector, radius_vector);
     }

@@ -35,10 +35,15 @@ namespace pixel {
     std::unique_ptr<BSDF> MatteMaterial::GetBSDF(const SurfaceInteraction &interaction) const {
         // Allocate BSDF
         auto bsdf = std::make_unique<BSDF>(interaction);
-        // Evaluate texture
+        // Evaluate textures
         const SSESpectrum rho = Kd->Evaluate(interaction);
+        const float sig = sigma->Evaluate(interaction);
         if (!IsBlack(rho)) {
-            bsdf->AddBRDF(new LambertianReflection(rho));
+            if (sig == 0) {
+                bsdf->AddBRDF(new LambertianReflection(rho));
+            } else {
+                bsdf->AddBRDF(new OrenNayar(rho, sig));
+            }
         }
 
         return bsdf;

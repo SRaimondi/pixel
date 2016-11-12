@@ -64,13 +64,18 @@
 int main(int argc, char **argv) {
 
     // Create film
-    pixel::Film *f = new pixel::BoxFilterFilm(1024, 1024);
+    std::shared_ptr<pixel::Film> f = std::make_shared<pixel::BoxFilterFilm>(1024, 1024);
+    // pixel::Film *f = new pixel::BoxFilterFilm(1024, 1024);
 
     // Create camera
-    pixel::CameraInterface *camera = new pixel::PinholeCamera(
-            pixel::SSEVector(-15.f, 20.f, 20.f, 1.f), pixel::SSEVector(0.f, 0.f, 0.f, 1.f),
+    std::shared_ptr<const pixel::CameraInterface> camera = std::make_shared<const pixel::PinholeCamera>(
+            pixel::SSEVector(0.f, 10.f, 35.f, 1.f), pixel::SSEVector(0.f, 10.f, 0.f, 1.f),
             pixel::SSEVector(0.f, 1.f, 0.f, 0.f),
             60.f, f->GetWidth(), f->GetHeight());
+//    pixel::CameraInterface *camera = new pixel::PinholeCamera(
+//            pixel::SSEVector(0.f, 10.f, 35.f, 1.f), pixel::SSEVector(0.f, 10.f, 0.f, 1.f),
+//            pixel::SSEVector(0.f, 1.f, 0.f, 0.f),
+//            60.f, f->GetWidth(), f->GetHeight());
 
     pixel::PrimitiveList list;
 
@@ -87,7 +92,7 @@ int main(int argc, char **argv) {
             pixel::SSESpectrum(0.1f, 0.9f, 0.9f));
     auto violet_tex = std::make_shared<const pixel::ConstantTexture<pixel::SSESpectrum>>(
             pixel::SSESpectrum(0.8f, 0.f, 0.8f));
-    auto sigma_tex = std::make_shared<const pixel::ConstantTexture<float>>(0.f);
+    auto sigma_tex = std::make_shared<const pixel::ConstantTexture<float>>(45.f);
     auto ref_tex = std::make_shared<const pixel::ConstantTexture<float>>(1.3f);
     auto mirror_tex = std::make_shared<const pixel::ConstantTexture<pixel::SSESpectrum>>(pixel::SSESpectrum(0.9f));
     auto emission_tex = std::make_shared<const pixel::ConstantTexture<pixel::SSESpectrum>>(pixel::SSESpectrum(10.f));
@@ -110,26 +115,50 @@ int main(int argc, char **argv) {
     auto p2 = std::make_shared<const pixel::Instance>(s2, m2);
     list.AddPrimitive(p2.get());
 
-    auto s3 = std::make_shared<const pixel::Sphere>(pixel::Translate(0.f, 2.f, 3.f), 2.f);
+    auto s3 = std::make_shared<const pixel::Sphere>(pixel::Translate(4.f, 6.f, 5.f), 3.f);
     auto g1 = std::make_shared<const pixel::GlassMaterial>(mirror_tex, mirror_tex, ref_tex);
     auto p3 = std::make_shared<const pixel::Instance>(s3, g1);
     list.AddPrimitive(p3.get());
 
-    auto s4 = std::make_shared<const pixel::Sphere>(pixel::Translate(0.f, 2.f, -4.f) * pixel::Scale(3.f, 1.f, 1.f),
-                                                    2.f);
+    auto s31 = std::make_shared<const pixel::Sphere>(pixel::Translate(-4.f, 6.f, 5.f), 3.f);
+    auto p31 = std::make_shared<const pixel::Instance>(s31, g1);
+    list.AddPrimitive(p31.get());
+
+    auto s4 = std::make_shared<const pixel::Sphere>(pixel::Translate(6.f, 8.f, -4.f), 2.f);
     auto mirror1 = std::make_shared<const pixel::MirrorMaterial>(mirror_tex);
     auto p4 = std::make_shared<const pixel::Instance>(s4, mirror1);
     list.AddPrimitive(p4.get());
 
-    auto r = std::make_shared<const pixel::Rectangle>(pixel::SSEMatrix(), 20.f, 20.f);
+    auto r1 = std::make_shared<const pixel::Rectangle>(pixel::SSEMatrix(), 20.f, 20.f);
     auto m3 = std::make_shared<const pixel::MatteMaterial>(grid_tex, sigma_tex);
-    auto p5 = std::make_shared<const pixel::Instance>(r, m3);
+    auto p5 = std::make_shared<const pixel::Instance>(r1, m3);
     list.AddPrimitive(p5.get());
 
+    auto r2 = std::make_shared<const pixel::Rectangle>(pixel::Translate(10.f, 10.f, 0.f) * pixel::RotateZ(90.f), 20.f,
+                                                       20.f);
+    auto p6 = std::make_shared<const pixel::Instance>(r2, m3);
+    list.AddPrimitive(p6.get());
+
+    auto r3 = std::make_shared<const pixel::Rectangle>(pixel::Translate(-10.f, 10.f, 0.f) * pixel::RotateZ(-90.f), 20.f,
+                                                       20.f);
+    auto p7 = std::make_shared<const pixel::Instance>(r3, m3);
+    list.AddPrimitive(p7.get());
+
+    auto r4 = std::make_shared<const pixel::Rectangle>(pixel::Translate(0.f, 10.f, -10.f) * pixel::RotateX(90.f), 20.f,
+                                                       20.f);
+    auto p8 = std::make_shared<const pixel::Instance>(r4, m3);
+    list.AddPrimitive(p8.get());
+
+    auto r5 = std::make_shared<const pixel::Rectangle>(pixel::Translate(0.f, 20.f, 0.f) * pixel::RotateX(180.f), 20.f,
+                                                       20.f);
+    auto p9 = std::make_shared<const pixel::Instance>(r5, m3);
+    list.AddPrimitive(p9.get());
+
     auto sphere_light = std::make_shared<const pixel::Sphere>(pixel::Translate(0.f, 10.f, 0.f), 2.5f);
-    auto rectangle_light = std::make_shared<const pixel::Rectangle>(pixel::Translate(0.f, 10.f, 0.f) * pixel::RotateX(180.f), 10.f, 10.f);
+    auto rectangle_light = std::make_shared<const pixel::Rectangle>(
+            pixel::Translate(0.f, 19.f, 0.f) * pixel::RotateX(180.f), 10.f, 10.f);
     auto emitting_mat = std::make_shared<const pixel::EmittingMaterial>(emission_tex);
-    auto area_light = std::make_shared<const pixel::AreaLight>(sphere_light, emitting_mat);
+    auto area_light = std::make_shared<const pixel::AreaLight>(rectangle_light, emitting_mat);
     list.AddPrimitive(area_light.get());
 
     // Create scene
@@ -139,21 +168,20 @@ int main(int argc, char **argv) {
     scene.AddLight(area_light.get());
 
     // Create renderer
+    std::shared_ptr<const pixel::RendererInterface> renderer;
 //    pixel::RendererInterface *renderer = new pixel::SamplerRenderer(
 //            new pixel::DebugIntegrator(pixel::DebugMode::DEBUG_NORMAL), 1);
-    pixel::RendererInterface *renderer = new pixel::SamplerRenderer(
-            new pixel::WhittedIntegrator(), 64);
 //    pixel::RendererInterface *renderer = new pixel::SamplerRenderer(
-//            new pixel::PathTracerIntegrator(), 512
-//    );
+//            new pixel::WhittedIntegrator(), 256);
+    renderer = std::make_shared<const pixel::SamplerRenderer>(std::make_shared<const pixel::WhittedIntegrator>(), 128);
 
     // Render image
-    renderer->RenderImage(f, scene, *camera);
+    renderer->RenderImage(f.get(), scene, *camera);
 
     // Create tone mapper
-    pixel::ToneMapperInterface *t = new pixel::ClampToneMapper(1.f);
+    std::shared_ptr<const pixel::ToneMapperInterface> t = std::make_shared<const pixel::ClampToneMapper>(1.2f);
     // Process image and create it
-    t->Process(std::string("test.ppm"), *f);
+    t->Process(std::string("test_oren.ppm"), *f);
 
     return 0;
 }
